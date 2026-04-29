@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.stats import norm
-from __pycache__.Models.greeks import greeks
+from optionpricer.analytics.greeks import greeks
 
 def black_scholes(S, K, T, r, sigma, option_type="call"):
     d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
