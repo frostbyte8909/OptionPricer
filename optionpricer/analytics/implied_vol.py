@@ -4,7 +4,7 @@ from optionpricer.models.binomial import build_tree
 from optionpricer.analytics.greeks import greeks
 
 try:
-    from lets_be_rational import implied_volatility_from_a_transformed_rational_guess
+    from py_lets_be_rational import implied_volatility_from_a_transformed_rational_guess
     HAS_LBR = True
 except ImportError:
     HAS_LBR = False
@@ -13,9 +13,9 @@ def implied_vol(market_price, S, K, T, r, N=100, option_type="call", american=Fa
     if HAS_LBR and not american:
         F    = S * np.exp(r * T)
         D    = np.exp(-r * T)
-        flag = "c" if option_type == "call" else "p"
+        q    = 1 if option_type == "call" else -1
         iv   = implied_volatility_from_a_transformed_rational_guess(
-                   market_price / D, F, K, T, flag)
+                   market_price / D, F, K, T, q)
         if iv > 0:
             return iv
 
