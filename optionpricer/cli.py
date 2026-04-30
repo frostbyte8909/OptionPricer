@@ -43,6 +43,9 @@ def main():
         p.add_argument("--sigma", type=float, required=True, help="Volatility")
         p.add_argument("--type", type=str, choices=["call", "put"], required=True, help="Option type")
 
+    parser_bin.add_argument("-N", type=int, default=1000, help="Number of steps in binomial tree")
+    parser_mc.add_argument("-N", type=int, default=32768, help="Number of Monte Carlo paths")
+
     args = parser.parse_args()
 
     if not args.model:
@@ -53,10 +56,10 @@ def main():
         price = black_scholes(args.S, args.K, args.T, args.r, args.sigma, option_type=args.type)
         print(f"Black-Scholes Price: {price:.4f}")
     elif args.model == "binomial":
-        price = build_tree(args.S, args.K, args.T, args.r, args.sigma, option_type=args.type)
+        price = build_tree(args.S, args.K, args.T, args.r, args.sigma, N=args.N, option_type=args.type)
         print(f"Binomial Tree Price: {price:.4f}")
     elif args.model == "mc":
-        price = monte_carlo_prices(args.S, args.K, args.T, args.r, args.sigma, option_type=args.type)
+        price = monte_carlo_prices(args.S, args.K, args.T, args.r, args.sigma, N=args.N, option_type=args.type)
         print(f"Monte Carlo Price: {price:.4f}")
     
 

@@ -18,6 +18,27 @@ def greeks(S: float, K: float, T: float, r: float, sigma: float, N: int = 100, o
     Returns:
         dict[str, float]: A dictionary containing 'delta', 'gamma', 'theta', 'vega', and 'rho'.
     """
+    if not american:
+        from scipy.stats import norm
+        d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
+        d2 = d1 - sigma * np.sqrt(T)
+        
+        pdf_d1 = norm.pdf(d1)
+        cdf_d1 = norm.cdf(d1) if option_type == "call" else norm.cdf(d1) - 1.0
+        
+        delta = cdf_d1
+        gamma = pdf_d1 / (S * sigma * np.sqrt(T))
+        vega = S * pdf_d1 * np.sqrt(T)
+        
+        if option_type == "call":
+            theta = (- (S * sigma * pdf_d1) / (2 * np.sqrt(T)) - r * K * np.exp(-r * T) * norm.cdf(d2)) / 365
+            rho = K * T * np.exp(-r * T) * norm.cdf(d2) / 100
+        else:
+            theta = (- (S * sigma * pdf_d1) / (2 * np.sqrt(T)) + r * K * np.exp(-r * T) * norm.cdf(-d2)) / 365
+            rho = -K * T * np.exp(-r * T) * norm.cdf(-d2) / 100
+            
+        return {"delta": delta, "gamma": gamma, "vega": vega, "theta": theta, "rho": rho}
+
     bump_sigma = 0.01
     bump_r     = 0.001
     dt = T / N

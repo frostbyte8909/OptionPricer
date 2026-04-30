@@ -30,20 +30,26 @@ def monte_carlo_prices(S: float, K: float, T: float, r: float, sigma: float, N: 
     half = 1 << (half - 1).bit_length()
 
     sampler = Sobol(d=1, scramble=True)
-    Z = norm.ppf(sampler.random(half)).ravel()
+    Z = norm.ppf(np.clip(sampler.random(half), 1e-10, 1 - 1e-10)).ravel()
 
     drift  = (r - 0.5 * sigma**2) * T
     vol    = sigma * np.sqrt(T)
-    ST_pos = S * np.exp(drift + vol * Z)
-    ST_neg = S * np.exp(drift - vol * Z)
+    
+    ST_all = np.empty(N)
+    ST_all[:half] = S * np.exp(drift + vol * Z)
+    ST_all[half:] = S * np.exp(drift - vol * Z)
 
-    p_all  = np.concatenate([payoff(ST_pos, K, option_type),
-                              payoff(ST_neg, K, option_type)])
-    ST_all = np.concatenate([ST_pos, ST_neg])
+    p_all = np.empty(N)
+    if option_type == "call":
+        np.maximum(ST_all - K, 0, out=p_all)
+    else:
+        np.maximum(K - ST_all, 0, out=p_all)
+
     E_ST   = S * np.exp(r * T)
-
     ST_dev = ST_all - ST_all.mean()
-    c      = -np.dot(p_all - p_all.mean(), ST_dev) / np.dot(ST_dev, ST_dev)
+    p_mean = p_all.mean()
+    
+    c = -np.dot(p_all - p_mean, ST_dev) / np.dot(ST_dev, ST_dev)
 
     return np.exp(-r * T) * (p_all + c * (ST_all - E_ST)).mean()
 

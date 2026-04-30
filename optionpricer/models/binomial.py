@@ -4,7 +4,7 @@ from numba import njit
 try:
     from optionpricer.models._binomial_cy import _build_tree_cython as _build_tree_core
 except ImportError:
-    @njit
+    @njit(cache=True, fastmath=True)
     def _build_tree_core(option, S_T, u_pows, K, df, p, N, is_call, american):
         for i in range(N - 1, -1, -1):
             scalar = u_pows[N - i]
@@ -48,9 +48,7 @@ def build_tree(S: float, K: float, T: float, r: float, sigma: float, N: int = 10
     p  = (np.exp(r * dt) - d) / (u - d)
 
     u_pows    = np.empty(N + 1)
-    u_pows[0] = 1.0
-    for k in range(1, N + 1):
-        u_pows[k] = u_pows[k - 1] * u
+    u_pows = np.power(u, np.arrange(N + 1))
 
     S_T    = S * u_pows / u_pows[::-1]
     option = np.maximum(S_T - K, 0.0) if is_call else np.maximum(K - S_T, 0.0)
