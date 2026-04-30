@@ -1,0 +1,4 @@
+include optionpricer/models/*.pyx
+global-exclude *.so
+global-exclude *.pyc
+global-exclude __pycache__

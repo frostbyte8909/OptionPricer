@@ -1,7 +1,23 @@
 import numpy as np
 from optionpricer.models.binomial import build_tree
 
-def greeks(S, K, T, r, sigma, N=100, option_type="call", american=False):
+def greeks(S: float, K: float, T: float, r: float, sigma: float, N: int = 100, option_type: str = "call", american: bool = False) -> dict[str, float]:
+    """
+    Calculate the options Greeks (Delta, Gamma, Theta, Vega, Rho) using finite differences on the binomial tree.
+
+    Args:
+        S (float): Current asset price.
+        K (float): Strike price of the option.
+        T (float): Time to maturity in years.
+        r (float): Risk-free interest rate (annualized).
+        sigma (float): Volatility of the underlying asset (annualized).
+        N (int, optional): Number of steps in the binomial tree used for pricing. Defaults to 100.
+        option_type (str, optional): 'call' for Call option, 'put' for Put option. Defaults to 'call'.
+        american (bool, optional): If True, calculates Greeks for an American option. Defaults to False.
+
+    Returns:
+        dict[str, float]: A dictionary containing 'delta', 'gamma', 'theta', 'vega', and 'rho'.
+    """
     bump_sigma = 0.01
     bump_r     = 0.001
     dt = T / N

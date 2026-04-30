@@ -1,16 +1,35 @@
 import numpy as np
 from scipy.stats import norm
-from optionpricer.analytics.greeks import greeks
 
-def black_scholes(S, K, T, r, sigma, option_type="call"):
+def black_scholes(S: float, K: float, T: float, r: float, sigma: float, option_type: str = "call") -> float:
+    """
+    Calculate the theoretical price of a European option using the Black-Scholes model.
+
+    Args:
+        S (float): Current asset price.
+        K (float): Strike price of the option.
+        T (float): Time to maturity in years.
+        r (float): Risk-free interest rate (annualized).
+        sigma (float): Volatility of the underlying asset (annualized).
+        option_type (str, optional): 'call' for Call option, 'put' for Put option. Defaults to 'call'.
+
+    Returns:
+        float: The theoretical price of the option.
+        
+    Raises:
+        ValueError: If option_type is not 'call' or 'put'.
+    """
     d1 = (np.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
     d2 = d1 - sigma * np.sqrt(T)
     if option_type == "call":
         return S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
     elif option_type == "put":
         return K * np.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+    raise ValueError(f"option_type must be 'call' or 'put', got '{option_type}'")
 
 if __name__ == "__main__":
+    from optionpricer.analytics.greeks import greeks
+
     print("=== Options Greeks Calculator ===\n")
     S     = float(input("Stock price (S):       "))
     K     = float(input("Strike price (K):      "))
