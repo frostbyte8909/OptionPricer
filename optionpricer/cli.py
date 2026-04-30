@@ -14,7 +14,6 @@ def main():
     
     subparsers = parser.add_subparsers(dest="model", help="Pricing model to use")
 
-    # Dynamically inject the Python docstrings into the CLI help descriptions
     parser_bs = subparsers.add_parser(
         "bs", 
         help="Black-Scholes analytical pricer", 
@@ -36,7 +35,6 @@ def main():
         formatter_class=argparse.RawTextHelpFormatter
     )
 
-    # Add common arguments to all subparsers
     for p in [parser_bs, parser_bin, parser_mc]:
         p.add_argument("-S", type=float, required=True, help="Current asset price")
         p.add_argument("-K", type=float, required=True, help="Strike price")
@@ -47,7 +45,6 @@ def main():
 
     args = parser.parse_args()
 
-    # If no arguments provided, print root help
     if not args.model:
         parser.print_help()
         sys.exit(1)
