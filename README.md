@@ -1,6 +1,6 @@
 # OptionPricer
 
-A high-performance, professional-grade quantitative finance library for option pricing, optimized heavily via NumPy vectorization, Numba JIT, and Cython AOT compilation.
+A high-performance, professional-grade (to the best of my ability) quantitative finance library for option pricing, optimized heavily via NumPy vectorization, Numba JIT, and Cython AOT compilation.
 
 ## Development Journey & Architecture
 
