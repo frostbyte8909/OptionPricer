@@ -32,22 +32,18 @@ def greeks(contract: OptionContract, market: MarketState, N: int = 100) -> dict[
 
     f = build_tree(contract, market, N)
     
-    # Delta & Gamma
     ds = S * 0.01
     f_up = build_tree(contract, MarketState(S + ds, r, sigma, q), N)
     f_dn = build_tree(contract, MarketState(S - ds, r, sigma, q), N)
     delta = (f_up - f_dn) / (2 * ds)
     gamma = (f_up - 2 * f + f_dn) / (ds ** 2)
 
-    # Theta
     c_theta = copy.deepcopy(contract)
     c_theta.expiry = T - bump_T
     theta = (build_tree(c_theta, market, N) - f) / bump_T / 365.0
 
-    # Vega
     vega = (build_tree(contract, MarketState(S, r, sigma + bump_sigma, q), N) - f) / bump_sigma / 100.0
 
-    # Rho
     rho = (build_tree(contract, MarketState(S, r + bump_r, sigma, q), N) - f) / bump_r / 100.0
 
     return {"delta": delta, "gamma": gamma, "vega": vega, "theta": theta, "rho": rho}

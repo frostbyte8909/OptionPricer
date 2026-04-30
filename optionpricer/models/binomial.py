@@ -36,8 +36,6 @@ def build_tree(contract: OptionContract, market: MarketState, N: int = 1000) -> 
     S_arr = np.broadcast_to(market.spot, b.shape).astype(float).ravel()
     K_arr = np.broadcast_to(contract.strike, b.shape).astype(float).ravel()
     
-    # We assume T, r, sigma, q are scalar for the tree structure definition
-    # since tree node timing depends on T.
     T = float(contract.expiry)
     r = float(market.rate)
     sigma = float(market.volatility)

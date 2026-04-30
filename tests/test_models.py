@@ -5,7 +5,6 @@ from optionpricer.models.black_scholes import black_scholes
 from optionpricer.models.binomial import build_tree
 
 def test_black_scholes_textbook():
-    # Hull Textbook benchmark
     contract = OptionContract(strike=100, expiry=1.0, option_type="call")
     market = MarketState(spot=100, rate=0.05, volatility=0.2, dividend=0.0)
     price = black_scholes(contract, market)
