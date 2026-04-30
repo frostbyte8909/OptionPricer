@@ -1,12 +1,11 @@
 # cython: boundscheck=False, wraparound=False, cdivision=True
-import numpy as np
-cimport numpy as np
+from libc.stdlib cimport malloc, free
 
 cpdef double _build_tree_cython(
-    double[:] option, 
-    double[:] S_T, 
-    double[:] u_pows, 
+    double S, 
     double K, 
+    double u,
+    double d,
     double df, 
     double p, 
     int N, 
@@ -14,15 +13,22 @@ cpdef double _build_tree_cython(
     bint american
 ):
     cdef int i, j
-    cdef double scalar, S_ij, intrinsic
+    cdef double intrinsic, S_ij, result
+    cdef double* option = <double*>malloc((N + 1) * sizeof(double))
+    
+    for j in range(N + 1):
+        S_ij = S * (u ** (N - j)) * (d ** j)
+        if is_call:
+            option[j] = S_ij - K if S_ij > K else 0.0
+        else:
+            option[j] = K - S_ij if K > S_ij else 0.0
 
     for i in range(N - 1, -1, -1):
-        scalar = u_pows[N - i]
         for j in range(i + 1):
             option[j] = df * (p * option[j + 1] + (1 - p) * option[j])
             
             if american:
-                S_ij = S_T[j] * scalar
+                S_ij = S * (u ** (i - j)) * (d ** j)
                 if is_call:
                     intrinsic = S_ij - K if S_ij > K else 0.0
                 else:
@@ -31,4 +37,6 @@ cpdef double _build_tree_cython(
                 if intrinsic > option[j]:
                     option[j] = intrinsic
                     
-    return option[0]
+    result = option[0]
+    free(option)
+    return result

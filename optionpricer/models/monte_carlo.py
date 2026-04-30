@@ -1,30 +1,13 @@
 import numpy as np
 from scipy.stats.qmc import Sobol
 from scipy.stats import norm
+from typing import Union
 
-def monte_carlo_prices(S: float, K: float, T: float, r: float, sigma: float, q: float = 0.0, N: int = 32_768, option_type: str = "call") -> float:
-    """
-    Price a European option using Monte Carlo simulation.
-    Features Sobol sequences (quasi-Monte Carlo), antithetic variates, and control variates for variance reduction.
-    Supports continuous dividend yields.
-
-    Args:
-        S (float): Current asset price.
-        K (float): Strike price of the option.
-        T (float): Time to maturity in years.
-        r (float): Risk-free interest rate (annualized).
-        sigma (float): Volatility of the underlying asset (annualized).
-        q (float, optional): Continuous dividend yield. Defaults to 0.0.
-        N (int, optional): Number of simulation paths (rounded up to nearest power of 2). Defaults to 32,768.
-        option_type (str, optional): 'call' for Call option, 'put' for Put option. Defaults to 'call'.
-
-    Returns:
-        float: The theoretical price of the option.
-    """
+def _monte_carlo_scalar(S: float, K: float, T: float, r: float, sigma: float, q: float = 0.0, N: int = 32_768, option_type: str = "call", seed: int = None) -> float:
     half = N // 2
     half = 1 << (half - 1).bit_length()
 
-    sampler = Sobol(d=1, scramble=True)
+    sampler = Sobol(d=1, scramble=True, seed=seed)
     Z = norm.ppf(np.clip(sampler.random(half), 1e-10, 1 - 1e-10)).ravel()
 
     drift  = (r - q - 0.5 * sigma**2) * T
@@ -44,6 +27,16 @@ def monte_carlo_prices(S: float, K: float, T: float, r: float, sigma: float, q: 
     ST_dev = ST_all - ST_all.mean()
     p_mean = p_all.mean()
     
-    c = -np.dot(p_all - p_mean, ST_dev) / np.dot(ST_dev, ST_dev)
+    dot_dev = np.dot(ST_dev, ST_dev)
+    if dot_dev == 0:
+        c = 0.0
+    else:
+        c = -np.dot(p_all - p_mean, ST_dev) / dot_dev
 
     return np.exp(-r * T) * (p_all + c * (ST_all - E_ST)).mean()
+
+def monte_carlo_prices(S: Union[float, np.ndarray], K: Union[float, np.ndarray], T: Union[float, np.ndarray], r: Union[float, np.ndarray], sigma: Union[float, np.ndarray], q: Union[float, np.ndarray] = 0.0, N: int = 32_768, option_type: str = "call", seed: int = None) -> Union[float, np.ndarray]:
+    if any(isinstance(x, np.ndarray) for x in (S, K, T, r, sigma, q)):
+        v_mc = np.vectorize(_monte_carlo_scalar, excluded=['N', 'option_type', 'seed'])
+        return v_mc(S, K, T, r, sigma, q, N=N, option_type=option_type, seed=seed)
+    return _monte_carlo_scalar(S, K, T, r, sigma, q, N, option_type, seed)

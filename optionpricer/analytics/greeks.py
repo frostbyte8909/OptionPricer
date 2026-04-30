@@ -1,28 +1,16 @@
 import numpy as np
 from optionpricer.models.binomial import build_tree
 
-def greeks(S: float, K: float, T: float, r: float, sigma: float, q: float = 0.0, N: int = 100, option_type: str = "call", american: bool = False) -> dict[str, float]:
-    """
-    Calculate the options Greeks (Delta, Gamma, Theta, Vega, Rho) natively.
-    Uses exact analytical derivatives for European options and finite difference on the binomial tree for American options.
-    Supports continuous dividend yields.
-
-    Args:
-        S (float): Current asset price.
-        K (float): Strike price of the option.
-        T (float): Time to maturity in years.
-        r (float): Risk-free interest rate (annualized).
-        sigma (float): Volatility of the underlying asset (annualized).
-        q (float, optional): Continuous dividend yield. Defaults to 0.0.
-        N (int, optional): Number of steps in the binomial tree used for pricing American options. Defaults to 100.
-        option_type (str, optional): 'call' for Call option, 'put' for Put option. Defaults to 'call'.
-        american (bool, optional): If True, calculates Greeks for an American option. Defaults to False.
-
-    Returns:
-        dict[str, float]: A dictionary containing 'delta', 'gamma', 'theta', 'vega', and 'rho'.
-    """
+def greeks(S, K, T, r, sigma, q=0.0, N=100, option_type="call", american=False):
     if not american:
         from scipy.stats import norm
+        S = np.asarray(S)
+        K = np.asarray(K)
+        T = np.asarray(T)
+        r = np.asarray(r)
+        sigma = np.asarray(sigma)
+        q = np.asarray(q)
+        
         d1 = (np.log(S / K) + (r - q + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
         d2 = d1 - sigma * np.sqrt(T)
         
@@ -40,7 +28,7 @@ def greeks(S: float, K: float, T: float, r: float, sigma: float, q: float = 0.0,
             theta = (- (S * sigma * np.exp(-q * T) * pdf_d1) / (2 * np.sqrt(T)) - q * S * np.exp(-q * T) * norm.cdf(-d1) + r * K * np.exp(-r * T) * norm.cdf(-d2)) / 365
             rho = -K * T * np.exp(-r * T) * norm.cdf(-d2) / 100
             
-        return {"delta": delta, "gamma": gamma, "vega": vega, "theta": theta, "rho": rho}
+        return {"delta": float(delta) if delta.ndim == 0 else delta, "gamma": float(gamma) if gamma.ndim == 0 else gamma, "vega": float(vega) if vega.ndim == 0 else vega, "theta": float(theta) if theta.ndim == 0 else theta, "rho": float(rho) if rho.ndim == 0 else rho}
 
     bump_sigma = 0.01
     bump_r     = 0.001

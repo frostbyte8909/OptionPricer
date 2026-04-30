@@ -3,38 +3,19 @@ from scipy.stats import norm
 from typing import Union
 
 def black_scholes(S: Union[float, np.ndarray], K: Union[float, np.ndarray], T: Union[float, np.ndarray], r: Union[float, np.ndarray], sigma: Union[float, np.ndarray], q: Union[float, np.ndarray] = 0.0, option_type: str = "call") -> Union[float, np.ndarray]:
-    """
-    Calculate the theoretical price of a European option using the Black-Scholes-Merton model.
-    Supports continuous dividend yields and vectorized inputs (NumPy arrays).
-    Handles edge cases for expiration (T=0) and deterministic states (sigma=0).
-
-    Args:
-        S (Union[float, np.ndarray]): Current asset price.
-        K (Union[float, np.ndarray]): Strike price of the option.
-        T (Union[float, np.ndarray]): Time to maturity in years.
-        r (Union[float, np.ndarray]): Risk-free interest rate (annualized).
-        sigma (Union[float, np.ndarray]): Volatility of the underlying asset (annualized).
-        q (Union[float, np.ndarray], optional): Continuous dividend yield. Defaults to 0.0.
-        option_type (str, optional): 'call' for Call option, 'put' for Put option. Defaults to 'call'.
-
-    Returns:
-        Union[float, np.ndarray]: The theoretical price of the option(s).
-        
-    Raises:
-        ValueError: If option_type is not 'call' or 'put'.
-    """
-    S_arr = np.atleast_1d(S).astype(float)
-    K_arr = np.atleast_1d(K).astype(float)
-    T_arr = np.atleast_1d(T).astype(float)
-    r_arr = np.atleast_1d(r).astype(float)
-    sigma_arr = np.atleast_1d(sigma).astype(float)
-    q_arr = np.atleast_1d(q).astype(float)
+    b = np.broadcast(S, K, T, r, sigma, q)
+    S_arr = np.broadcast_to(S, b.shape).astype(float)
+    K_arr = np.broadcast_to(K, b.shape).astype(float)
+    T_arr = np.broadcast_to(T, b.shape).astype(float)
+    r_arr = np.broadcast_to(r, b.shape).astype(float)
+    sigma_arr = np.broadcast_to(sigma, b.shape).astype(float)
+    q_arr = np.broadcast_to(q, b.shape).astype(float)
 
     is_expired = T_arr <= 1e-8
     is_deterministic = sigma_arr <= 1e-8
     mask_edge = is_expired | is_deterministic
 
-    result = np.zeros_like(S_arr, dtype=float)
+    result = np.zeros(b.shape, dtype=float)
 
     if np.any(mask_edge):
         if option_type == "call":
@@ -42,7 +23,7 @@ def black_scholes(S: Union[float, np.ndarray], K: Union[float, np.ndarray], T: U
         elif option_type == "put":
             result[mask_edge] = np.maximum(K_arr[mask_edge] * np.exp(-r_arr[mask_edge] * T_arr[mask_edge]) - S_arr[mask_edge] * np.exp(-q_arr[mask_edge] * T_arr[mask_edge]), 0.0)
         else:
-            raise ValueError(f"option_type must be 'call' or 'put', got '{option_type}'")
+            raise ValueError(f"option_type must be 'call' or 'put'")
 
     mask_calc = ~mask_edge
     if np.any(mask_calc):
@@ -63,9 +44,7 @@ def black_scholes(S: Union[float, np.ndarray], K: Union[float, np.ndarray], T: U
             result[mask_calc] = S_c * df_q * norm.cdf(d1) - K_c * df_r * norm.cdf(d2)
         elif option_type == "put":
             result[mask_calc] = K_c * df_r * norm.cdf(-d2) - S_c * df_q * norm.cdf(-d1)
-        else:
-            raise ValueError(f"option_type must be 'call' or 'put', got '{option_type}'")
 
-    if result.size == 1:
+    if result.ndim == 0:
         return float(result.item())
     return result
