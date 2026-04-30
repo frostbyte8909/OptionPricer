@@ -53,5 +53,5 @@ price = build_tree(S=100, K=100, T=1, r=0.05, sigma=0.2, N=5000, option_type="pu
 mc_price = monte_carlo_prices(S=100, K=100, T=1, r=0.05, sigma=0.2)
 ```
 
-Painstakingly written manual code :sob: \n
+Painstakingly written manual code :sob:  
 buzzword buzzowrd buzzword
