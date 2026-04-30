@@ -1,39 +1,19 @@
 import argparse
 import sys
-
+from optionpricer.core import OptionContract, MarketState
 from optionpricer import black_scholes, build_tree, monte_carlo_prices
 
 def main():
-    """This is the entry point called by the terminal."""
-    
     parser = argparse.ArgumentParser(
         prog="optionpricer",
         description="A high-performance quantitative option pricing CLI.",
         formatter_class=argparse.RawTextHelpFormatter
     )
-    
     subparsers = parser.add_subparsers(dest="model", help="Pricing model to use")
 
-    parser_bs = subparsers.add_parser(
-        "bs", 
-        help="Black-Scholes analytical pricer", 
-        description=black_scholes.__doc__, 
-        formatter_class=argparse.RawTextHelpFormatter
-    )
-    
-    parser_bin = subparsers.add_parser(
-        "binomial", 
-        help="Cox-Ross-Rubinstein binomial tree", 
-        description=build_tree.__doc__, 
-        formatter_class=argparse.RawTextHelpFormatter
-    )
-    
-    parser_mc = subparsers.add_parser(
-        "mc", 
-        help="Monte Carlo simulator", 
-        description=monte_carlo_prices.__doc__, 
-        formatter_class=argparse.RawTextHelpFormatter
-    )
+    parser_bs = subparsers.add_parser("bs", help="Black-Scholes analytical pricer")
+    parser_bin = subparsers.add_parser("binomial", help="Cox-Ross-Rubinstein binomial tree")
+    parser_mc = subparsers.add_parser("mc", help="Monte Carlo simulator")
 
     for p in [parser_bs, parser_bin, parser_mc]:
         p.add_argument("-S", type=float, required=True, help="Current asset price")
@@ -46,23 +26,25 @@ def main():
 
     parser_bin.add_argument("-N", type=int, default=1000, help="Number of steps in binomial tree")
     parser_mc.add_argument("-N", type=int, default=32768, help="Number of Monte Carlo paths")
+    parser_mc.add_argument("--seed", type=int, default=42, help="Random seed")
 
     args = parser.parse_args()
-
     if not args.model:
         parser.print_help()
         sys.exit(1)
 
+    contract = OptionContract(strike=args.K, expiry=args.T, option_type=args.type)
+    market = MarketState(spot=args.S, rate=args.r, volatility=args.sigma, dividend=args.q)
+
     if args.model == "bs":
-        price = black_scholes(args.S, args.K, args.T, args.r, args.sigma, q=args.q, option_type=args.type)
+        price = black_scholes(contract, market)
         print(f"Black-Scholes Price: {price:.4f}")
     elif args.model == "binomial":
-        price = build_tree(args.S, args.K, args.T, args.r, args.sigma, q=args.q, N=args.N, option_type=args.type)
+        price = build_tree(contract, market, N=args.N)
         print(f"Binomial Tree Price: {price:.4f}")
     elif args.model == "mc":
-        price = monte_carlo_prices(args.S, args.K, args.T, args.r, args.sigma, q=args.q, N=args.N, option_type=args.type)
+        price = monte_carlo_prices(contract, market, N=args.N, seed=args.seed)
         print(f"Monte Carlo Price: {price:.4f}")
-    
 
 if __name__ == "__main__":
     main()

@@ -1,21 +1,26 @@
 from optionpricer.models.black_scholes import black_scholes
 from optionpricer.models.binomial import build_tree
 from optionpricer.analytics.greeks import greeks
+from optionpricer.core import OptionContract, MarketState
 
 if __name__ == "__main__":
     S     = float(input("Spot price (S): "))
     K     = float(input("Strike price (K): "))
     T     = float(input("Time to expiry in years (T): "))
     r     = float(input("Risk-free rate (r, e.g. 0.05): "))
+    q     = float(input("Dividend yield (q, e.g. 0.0): ") or 0.0)
     sigma = float(input("Volatility (sigma, e.g. 0.2): "))
     N     = int(input("Number of steps (N, default 100): ") or 100)
 
-    bs_price  = black_scholes(S, K, T, r, sigma, option_type="call")
-    euro_call = build_tree(S, K, T, r, sigma, N, option_type="call", american=False)
-    amer_call = build_tree(S, K, T, r, sigma, N, option_type="call", american=True)
-    euro_put  = build_tree(S, K, T, r, sigma, N, option_type="put",  american=False)
-    amer_put  = build_tree(S, K, T, r, sigma, N, option_type="put",  american=True)
-    g = greeks(S, K, T, r, sigma, N, option_type="call", american=False)
+    market = MarketState(spot=S, rate=r, volatility=sigma, dividend=q)
+    
+    bs_price  = black_scholes(OptionContract(K, T, "call"), market)
+    euro_call = build_tree(OptionContract(K, T, "call", False), market, N=N)
+    amer_call = build_tree(OptionContract(K, T, "call", True), market, N=N)
+    euro_put  = build_tree(OptionContract(K, T, "put", False), market, N=N)
+    amer_put  = build_tree(OptionContract(K, T, "put", True), market, N=N)
+    
+    g = greeks(OptionContract(K, T, "call"), market, N=N)
 
     print(f"\nB-S analytical price:            {bs_price:.4f}")
     print(f"European Call (Binomial, N={N}): {euro_call:.4f}")
