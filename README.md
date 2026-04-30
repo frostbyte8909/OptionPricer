@@ -24,7 +24,7 @@ This package was built systematically through strict, high-performance architect
 5. **Phase 5: Algorithmic Routing**
    - Engineered smart heuristics for implied volatility. Routes to Peter Jäckel's 'Let's Be Rational' for standard Euro options, falls back to Newton-Raphson for near-ATM scenarios, and seamlessly redirects to SciPy's robust `brentq` for deep OTM/ITM and American edge cases.
 
-6. **Phase 6: Professional Software Engineering**
+6. **Phase 6: Documentation**
    - Enforced strict dependency boundaries.
    - Fully annotated with Python Type Hints and Google-style docstrings.
    - Prepared for distribution via PyPA `build` and `twine` CI/CD standards.
