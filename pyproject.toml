@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "optionpricer"
-version = "0.1.6"
+version = "0.1.7"
 description = "A high-performance, professional-grade (i tried) quantitative option pricing library with Numba and Cython optimizations."
 readme = "README.md"
 authors = [{name = "Palash"}]

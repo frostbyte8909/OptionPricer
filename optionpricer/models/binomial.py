@@ -20,11 +20,10 @@ except ImportError:
                         option[j] = intrinsic
         return option[0]
 
-
-def build_tree(S: float, K: float, T: float, r: float, sigma: float, N: int = 1000, option_type: str = "call", american: bool = False) -> float:
+def build_tree(S: float, K: float, T: float, r: float, sigma: float, q: float = 0.0, N: int = 1000, option_type: str = "call", american: bool = False) -> float:
     """
     Price an option using the Cox-Ross-Rubinstein (CRR) binomial tree model.
-    Optimized internally via Cython or Numba.
+    Optimized internally via Cython or Numba. Supports continuous dividend yields.
 
     Args:
         S (float): Current asset price.
@@ -32,6 +31,7 @@ def build_tree(S: float, K: float, T: float, r: float, sigma: float, N: int = 10
         T (float): Time to maturity in years.
         r (float): Risk-free interest rate (annualized).
         sigma (float): Volatility of the underlying asset (annualized).
+        q (float, optional): Continuous dividend yield. Defaults to 0.0.
         N (int, optional): Number of steps in the binomial tree. Defaults to 1000.
         option_type (str, optional): 'call' for Call option, 'put' for Put option. Defaults to 'call'.
         american (bool, optional): If True, prices an American option with early exercise. If False, prices a European option. Defaults to False.
@@ -45,12 +45,11 @@ def build_tree(S: float, K: float, T: float, r: float, sigma: float, N: int = 10
     u  = np.exp(sigma * np.sqrt(dt))
     d  = 1.0 / u
     df = np.exp(-r * dt)
-    p  = (np.exp(r * dt) - d) / (u - d)
+    p  = (np.exp((r - q) * dt) - d) / (u - d)
 
-    u_pows    = np.empty(N + 1)
-    u_pows = np.power(u, np.arrange(N + 1))
-
+    u_pows = np.power(u, np.arange(N + 1))
     S_T    = S * u_pows / u_pows[::-1]
+    
     option = np.maximum(S_T - K, 0.0) if is_call else np.maximum(K - S_T, 0.0)
 
     return _build_tree_core(option, S_T, u_pows, K, df, p, N, is_call, american)

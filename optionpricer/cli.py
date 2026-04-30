@@ -40,6 +40,7 @@ def main():
         p.add_argument("-K", type=float, required=True, help="Strike price")
         p.add_argument("-T", type=float, required=True, help="Time to maturity (years)")
         p.add_argument("-r", type=float, required=True, help="Risk free rate")
+        p.add_argument("-q", type=float, default=0.0, help="Continuous dividend yield")
         p.add_argument("--sigma", type=float, required=True, help="Volatility")
         p.add_argument("--type", type=str, choices=["call", "put"], required=True, help="Option type")
 
@@ -53,13 +54,13 @@ def main():
         sys.exit(1)
 
     if args.model == "bs":
-        price = black_scholes(args.S, args.K, args.T, args.r, args.sigma, option_type=args.type)
+        price = black_scholes(args.S, args.K, args.T, args.r, args.sigma, q=args.q, option_type=args.type)
         print(f"Black-Scholes Price: {price:.4f}")
     elif args.model == "binomial":
-        price = build_tree(args.S, args.K, args.T, args.r, args.sigma, N=args.N, option_type=args.type)
+        price = build_tree(args.S, args.K, args.T, args.r, args.sigma, q=args.q, N=args.N, option_type=args.type)
         print(f"Binomial Tree Price: {price:.4f}")
     elif args.model == "mc":
-        price = monte_carlo_prices(args.S, args.K, args.T, args.r, args.sigma, N=args.N, option_type=args.type)
+        price = monte_carlo_prices(args.S, args.K, args.T, args.r, args.sigma, q=args.q, N=args.N, option_type=args.type)
         print(f"Monte Carlo Price: {price:.4f}")
     
 
