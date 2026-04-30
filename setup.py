@@ -7,6 +7,11 @@ extensions = [
         "optionpricer.models._binomial_cy",
         ["optionpricer/models/_binomial_cy.pyx"],
         include_dirs=[np.get_include()]
+    ),
+    Extension(
+        "optionpricer.models._fdm_cy",
+        ["optionpricer/models/_fdm_cy.pyx"],
+        include_dirs=[np.get_include()]
     )
 ]
 

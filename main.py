@@ -1,5 +1,6 @@
 from optionpricer.models.black_scholes import black_scholes
 from optionpricer.models.binomial import build_tree
+from optionpricer.models.fdm import crank_nicolson_fdm
 from optionpricer.analytics.greeks import greeks
 from optionpricer.core import OptionContract, MarketState
 
@@ -20,6 +21,9 @@ if __name__ == "__main__":
     euro_put  = build_tree(OptionContract(K, T, "put", False), market, N=N)
     amer_put  = build_tree(OptionContract(K, T, "put", True), market, N=N)
     
+    fdm_euro_call = crank_nicolson_fdm(OptionContract(K, T, "call", False), market, M=400, N=400)
+    fdm_amer_put  = crank_nicolson_fdm(OptionContract(K, T, "put", True), market, M=400, N=400)
+    
     g = greeks(OptionContract(K, T, "call"), market, N=N)
 
     print(f"\nB-S analytical price:            {bs_price:.4f}")
@@ -27,7 +31,10 @@ if __name__ == "__main__":
     print(f"American Call (Binomial, N={N}): {amer_call:.4f}")
     print(f"European Put  (Binomial, N={N}): {euro_put:.4f}")
     print(f"American Put  (Binomial, N={N}): {amer_put:.4f}")
+    print(f"European Call (FDM, M=400):      {fdm_euro_call:.4f}")
+    print(f"American Put  (FDM, M=400):      {fdm_amer_put:.4f}")
     print(f"Difference (Euro Call vs B-S):   {abs(euro_call - bs_price):.6f}")
+    print(f"Difference (FDM Call vs B-S):    {abs(fdm_euro_call - bs_price):.6f}")
     print(f"\n--- Greeks (European Call) ---")
     for name, val in g.items():
         print(f"  {name:>6}: {val:.6f}")
