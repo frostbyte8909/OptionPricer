@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package optionpricer.api;
+
+enum OptionType {
+  CALL = 0;
+  PUT = 1;
+}
+
+enum ExoticType {
+  VANILLA = 0;
+  ASIAN = 1;
+  LOOKBACK = 2;
+  BARRIER_UI = 3;
+  BARRIER_UO = 4;
+  BARRIER_DI = 5;
+  BARRIER_DO = 6;
+}
+
+message OptionContract {
+  repeated double strike = 1;
+  repeated double expiry = 2;
+  OptionType option_type = 3;
+  bool american = 4;
+  ExoticType exotic_type = 5;
+  repeated double barrier_level = 6;
+  repeated double rebate = 7;
+}
+
+message MarketState {
+  repeated double spot = 1;
+  repeated double rate = 2;
+  repeated double volatility = 3;
+  repeated double dividend = 4;
+}
+
+message PricingRequest {
+  OptionContract contract = 1;
+  MarketState market = 2;
+  string model = 3;
+}
+
+message PricingResponse {
+  repeated double prices = 1;
+  map<string, double> greeks = 2;
+  double compute_time_ns_per_option = 3;
+}
+
+service OptionPricerService {
+  rpc PriceBatch (PricingRequest) returns (PricingResponse);
+}
