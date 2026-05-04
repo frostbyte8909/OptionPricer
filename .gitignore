@@ -6,4 +6,4 @@ build/
 .eggs/
 .venv/
 *.so
-optionpricer/models/_binomial_cy.c
+optionpricer/models/_binomial_cy.c.pypirc
