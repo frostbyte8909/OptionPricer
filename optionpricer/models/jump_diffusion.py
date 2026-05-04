@@ -1,5 +1,6 @@
 import numpy as np
-from math import erfc, sqrt, exp, log, factorial
+from math import exp, log, sqrt
+from scipy.special import erfc as erfc_vec
 from typing import Union
 from optionpricer.core import OptionContract, MarketState, OptionType
 
@@ -7,8 +8,8 @@ from optionpricer.core import OptionContract, MarketState, OptionType
 _SQRT2 = sqrt(2.0)
 
 
-def _phi(x: float) -> float:
-    return 0.5 * erfc(-x / _SQRT2)
+def _phi_vec(x):
+    return 0.5 * erfc_vec(-x / _SQRT2)
 
 
 def merton_jump_diffusion(contract: OptionContract, market: MarketState,
@@ -17,22 +18,20 @@ def merton_jump_diffusion(contract: OptionContract, market: MarketState,
                           n_terms: int = 50) -> Union[float, np.ndarray]:
     """Price a European option under the Merton Jump-Diffusion model.
 
-    The asset follows GBM with superimposed compound Poisson jumps
-    where jump sizes are log-normally distributed. The price is expressed
-    as an infinite series of Black-Scholes prices weighted by Poisson
-    probabilities.
+    The asset follows GBM with superimposed compound Poisson jumps where
+    jump sizes are log-normally distributed. Computed as a Poisson-weighted
+    sum of BSM prices, fully vectorized across strikes.
 
     Args:
-        contract: Option contract specification.
-        market: Market state (spot, rate, vol, dividend).
+        contract: European option contract.
+        market: Market state.
         lam: Jump intensity (expected jumps per year).
         mu_j: Mean of log-jump size.
         sigma_j: Standard deviation of log-jump size.
-        n_terms: Number of Poisson series terms (50 is typically sufficient
-            for convergence to machine precision).
+        n_terms: Poisson series truncation (50 gives machine precision).
 
     Returns:
-        Option price as float (scalar inputs) or ndarray.
+        Option price as float or ndarray.
     """
     S = np.atleast_1d(np.asarray(market.spot, dtype=np.float64))
     K = np.atleast_1d(np.asarray(contract.strike, dtype=np.float64))
@@ -50,7 +49,11 @@ def merton_jump_diffusion(contract: OptionContract, market: MarketState,
     K_bc = np.broadcast_to(K, b.shape).ravel()
     result = np.zeros(S_bc.shape[0])
 
+    sqT = sqrt(T)
+    df_q = exp(-q * T)
+    log_SK = np.log(S_bc / K_bc)
     log_weight = -lam_prime * T
+
     for n in range(n_terms):
         sigma_n = sqrt(sigma ** 2 + n * sigma_j ** 2 / T)
         r_n = r - lam * kappa + n * (mu_j + 0.5 * sigma_j ** 2) / T
@@ -62,21 +65,18 @@ def merton_jump_diffusion(contract: OptionContract, market: MarketState,
         if w < 1e-16 and n > 5:
             break
 
-        for i in range(S_bc.shape[0]):
-            sqT = sqrt(T)
-            d1 = (log(S_bc[i] / K_bc[i]) + (r_n - q + 0.5 * sigma_n ** 2) * T) / (sigma_n * sqT)
-            d2 = d1 - sigma_n * sqT
-            df_r = exp(-r_n * T)
-            df_q = exp(-q * T)
+        d1 = (log_SK + (r_n - q + 0.5 * sigma_n ** 2) * T) / (sigma_n * sqT)
+        d2 = d1 - sigma_n * sqT
+        df_r = exp(-r_n * T)
 
-            if is_call:
-                bs_n = S_bc[i] * df_q * _phi(d1) - K_bc[i] * df_r * _phi(d2)
-            else:
-                bs_n = K_bc[i] * df_r * _phi(-d2) - S_bc[i] * df_q * _phi(-d1)
+        if is_call:
+            bs_n = S_bc * df_q * _phi_vec(d1) - K_bc * df_r * _phi_vec(d2)
+        else:
+            bs_n = K_bc * df_r * _phi_vec(-d2) - S_bc * df_q * _phi_vec(-d1)
 
-            result[i] += w * bs_n
+        result += w * bs_n
 
-    is_scalar = (np.ndim(market.spot) == 0 and np.ndim(contract.strike) == 0)
+    is_scalar = np.ndim(market.spot) == 0 and np.ndim(contract.strike) == 0
     if is_scalar:
         return float(result[0])
     return result.reshape(b.shape)

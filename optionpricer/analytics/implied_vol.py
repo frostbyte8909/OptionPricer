@@ -11,6 +11,20 @@ except ImportError:
     HAS_LBR = False
 
 def implied_vol(market_price: float, contract: OptionContract, market: MarketState, N: int = 100) -> float:
+    """Solve for the implied volatility of an option from its market price.
+
+    Routes to Peter Jäckel's 'Let's Be Rational' for European options,
+    Newton-Raphson for near-ATM, and Brent's method as a fallback.
+
+    Args:
+        market_price: Observed market price of the option.
+        contract: Option contract.
+        market: Market state (volatility field is overwritten during solve).
+        N: Binomial tree steps for American IV.
+
+    Returns:
+        Implied volatility as float, or NaN if solve fails.
+    """
     S, K, T, r, q = float(market.spot), float(contract.strike), float(contract.expiry), float(market.rate), float(market.dividend)
     
     if HAS_LBR and not contract.american:

@@ -4,6 +4,19 @@ from optionpricer.core import OptionContract, MarketState
 import copy
 
 def greeks(contract: OptionContract, market: MarketState, N: int = 100) -> dict[str, float]:
+    """Compute option Greeks via closed-form BSM or finite-difference bumping.
+
+    European contracts use closed-form BSM Greeks. American contracts fall
+    back to central-difference bumping against the binomial tree.
+
+    Args:
+        contract: Option contract.
+        market: Market state.
+        N: Number of binomial tree steps (for American Greeks).
+
+    Returns:
+        Dict with keys: delta, gamma, vega, theta, rho.
+    """
     S, K, T, r, sigma, q = float(market.spot), float(contract.strike), float(contract.expiry), float(market.rate), float(market.volatility), float(market.dividend)
     
     if not contract.american:
@@ -33,8 +46,8 @@ def greeks(contract: OptionContract, market: MarketState, N: int = 100) -> dict[
     f = build_tree(contract, market, N)
     
     ds = S * 0.01
-    f_up = build_tree(contract, MarketState(S + ds, r, sigma, q), N)
-    f_dn = build_tree(contract, MarketState(S - ds, r, sigma, q), N)
+    f_up = build_tree(contract, MarketState(spot=S + ds, rate=r, volatility=sigma, dividend=q), N)
+    f_dn = build_tree(contract, MarketState(spot=S - ds, rate=r, volatility=sigma, dividend=q), N)
     delta = (f_up - f_dn) / (2 * ds)
     gamma = (f_up - 2 * f + f_dn) / (ds ** 2)
 
@@ -42,8 +55,8 @@ def greeks(contract: OptionContract, market: MarketState, N: int = 100) -> dict[
     c_theta.expiry = T - bump_T
     theta = (build_tree(c_theta, market, N) - f) / bump_T / 365.0
 
-    vega = (build_tree(contract, MarketState(S, r, sigma + bump_sigma, q), N) - f) / bump_sigma / 100.0
+    vega = (build_tree(contract, MarketState(spot=S, rate=r, volatility=sigma + bump_sigma, dividend=q), N) - f) / bump_sigma / 100.0
 
-    rho = (build_tree(contract, MarketState(S, r + bump_r, sigma, q), N) - f) / bump_r / 100.0
+    rho = (build_tree(contract, MarketState(spot=S, rate=r + bump_r, volatility=sigma, dividend=q), N) - f) / bump_r / 100.0
 
     return {"delta": delta, "gamma": gamma, "vega": vega, "theta": theta, "rho": rho}

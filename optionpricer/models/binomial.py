@@ -32,6 +32,19 @@ except ImportError:
             result_arr[k] = option[0]
 
 def build_tree(contract: OptionContract, market: MarketState, N: int = 1000) -> Union[float, np.ndarray]:
+    """Price an option via the Cox-Ross-Rubinstein binomial lattice.
+
+    Uses a Cython-compiled kernel with OpenMP parallelization when
+    available, falling back to a Numba JIT kernel otherwise.
+
+    Args:
+        contract: Option contract (supports American exercise).
+        market: Market state.
+        N: Number of time steps in the lattice.
+
+    Returns:
+        Option price as float or ndarray.
+    """
     b = np.broadcast(market.spot, contract.strike)
     S_arr = np.broadcast_to(market.spot, b.shape).astype(float).ravel()
     K_arr = np.broadcast_to(contract.strike, b.shape).astype(float).ravel()

@@ -1,57 +1,79 @@
 # OptionPricer
 
-A high-performance, professional-grade (to the best of my ability) quantitative finance library for option pricing, optimized heavily via NumPy vectorization, Numba JIT, and Cython AOT compilation.
+A high-performance quantitative option pricing library with Cython AOT compilation, Numba JIT, stochastic volatility models, and institutional-grade numerical precision.
 
-## Development Journey & Architecture
-
-This package was built systematically through strict, high-performance architectural phases:
-
-1. **Phase 1: NumPy Vectorization**
-   - Eliminated slow Python loops in the core hot paths.
-   - Replaced scalar stock price reconstructions with precomputed power arrays, yielding a 3.7x baseline speedup on the binomial lattice.
-
-2. **Phase 2: Advanced Monte Carlo & Variance Reduction**
-   - Implemented Sobol Quasi-Random sequences to ensure superior space-filling over standard pseudo-random engines.
-   - Introduced Antithetic Variates ($Z$ and $-Z$) and Control Variates (using terminal spot price correlation) to achieve up to 800x variance reduction, allowing high precision at drastically lower path counts.
-
-3. **Phase 3: Numba JIT Compilation**
-   - Compiled the sequential backward-induction algorithms into machine code via LLVM.
-   - Handled Python's GIL overhead by isolating numerical loops inside pure-C equivalents, dropping execution time from 48ms down to 5ms for large $N$.
-
-4. **Phase 4: Cython Extensions & Pre-compiled Wheels**
-   - Statically typed the core mathematical functions (`cdef`, `double[:]` memoryviews) into an AOT compiled C-extension to completely eliminate runtime compilation warmup.
-
-5. **Phase 5: Algorithmic Routing**
-   - Engineered smart heuristics for implied volatility. Routes to Peter Jäckel's 'Let's Be Rational' for standard Euro options, falls back to Newton-Raphson for near-ATM scenarios, and seamlessly redirects to SciPy's robust `brentq` for deep OTM/ITM and American edge cases.
-
-6. **Phase 6: Documentation**
-   - Enforced strict dependency boundaries.
-   - Fully annotated with Python Type Hints and Google-style docstrings.
-   - Prepared for distribution via PyPA `build` and `twine` CI/CD standards.
-
-## Performance Benchmarks
-
-- **Black-Scholes (Analytical):** ~0.028 ms
-- **Implied Volatility (Brentq Solver):** ~0.144 ms
-- **Binomial Tree (American, N=1000):** ~0.362 ms
-- **Monte Carlo (Optimized, N=32,768):** ~0.519 ms
-- **Binomial Tree (American, N=5000):** ~6.766 ms
-
-## Usage
+## Installation
 
 ```bash
 pip install optionpricer
 ```
 
-```python
-from optionpricer import build_tree, monte_carlo_prices, implied_vol
-
-# Price a 5,000-step American Put via Cython
-price = build_tree(S=100, K=100, T=1, r=0.05, sigma=0.2, N=5000, option_type="put", american=True)
-
-# Generate 32,000 variance-reduced Monte Carlo paths
-mc_price = monte_carlo_prices(S=100, K=100, T=1, r=0.05, sigma=0.2)
+For faster implied volatility (Jäckel's "Let's Be Rational"):
+```bash
+pip install optionpricer[fast]
 ```
 
-Painstakingly written manual code :sob:  
-buzzword buzzowrd buzzword
+## Quick Start
+
+```python
+from optionpricer import OptionContract, MarketState, black_scholes, build_tree
+
+contract = OptionContract(strike=100, expiry=1.0, option_type="call")
+market = MarketState(spot=100, rate=0.05, volatility=0.2)
+
+# Analytical BSM (erfc-based, machine precision at ±8σ tails)
+price = black_scholes(contract, market)
+
+# American put via Cython binomial tree
+put = OptionContract(strike=100, expiry=1.0, option_type="put", american=True)
+american_price = build_tree(put, market, N=5000)
+
+# Full Greek vector via closed-form AAD
+from optionpricer import aad_greeks
+greeks = aad_greeks(contract, market)
+# -> {delta, gamma, vega, theta, rho, vanna, volga, charm}
+```
+
+## Pricing Models
+
+| Model | Module | Style | Speed |
+|:---|:---|:---|:---|
+| Black-Scholes (erfc) | `black_scholes()` | European | ~0.18 ms |
+| Binomial Tree (Cython/OpenMP) | `build_tree()` | American/European | ~0.3 ms (N=1000) |
+| Crank-Nicolson FDM (Cython) | `crank_nicolson_fdm()` | American/European | ~3.3 ms (200×200) |
+| Monte Carlo (Sobol + CV) | `monte_carlo_prices()` | All | ~1.0 ms (16K) |
+| Merton Jump-Diffusion | `merton_jump_diffusion()` | European | ~0.15 ms |
+| Carr-Madan FFT | `carr_madan_fft()` | European | ~0.23 ms |
+| Heston Stochastic Vol | `heston_price()` | European | ~0.5 ms |
+| Bates SVJD | `bates_price()` | European | ~0.5 ms |
+| Quanto | `quanto_price()` | European | ~0.1 ms |
+| Multi-Asset Basket (MC) | `basket_option()` | European | ~50 ms |
+| Bjerksund-Stensland | `bjerksund_stensland_american()` | American | ~0.1 ms |
+| Barrier (Analytical) | `barrier_analytical()` | European | ~0.1 ms |
+
+## Analytics
+
+| Module | Function | Description |
+|:---|:---|:---|
+| Implied Volatility | `implied_vol()` | Jäckel → Newton → Brent fallback |
+| Greeks (BSM) | `greeks()` | Closed-form Euro, FD bumping American |
+| AAD Greeks | `aad_greeks()` | Δ, Γ, V, Θ, ρ, Vanna, Volga, Charm |
+| Malliavin MC Greeks | `malliavin_greeks()` | Smooth Greeks for non-diff payoffs |
+| GARCH(1,1) | `garch_fit()` | MLE calibration with Numba variance path |
+| EWMA Vol | `ewma_volatility()` | 30-day fallback estimator |
+| SABR Smile | `sabr_implied_vol()` | Hagan formula with edge guards |
+| Dupire Local Vol | `dupire_local_vol()` | Surface from IV grid via spline |
+| Vanna-Volga | `vanna_volga_price()` | Smile-adjusted exotic pricing |
+| Nelson-Siegel | `fit_nelson_siegel()` | Yield curve calibration |
+| Arbitrage Check | `arbitrage_check()` | Calendar + butterfly validation |
+
+## Architecture
+
+- **Cython AOT:** Binomial tree and FDM solvers compiled to C with OpenMP for multi-core parallelism
+- **Numba JIT:** Monte Carlo paths, GARCH variance loop, Malliavin kernels compiled via LLVM
+- **erfc precision:** All BSM CDF calls use `erfc` to maintain accuracy at extreme tails
+- **Pydantic V2:** Type-safe contract/market schemas with validation
+
+## License
+
+Apache 2.0 — see [LICENSE](LICENSE).

@@ -16,6 +16,23 @@ def crank_nicolson_fdm(
     tol: float = 1e-6, 
     max_iter: int = 1000
 ) -> Union[float, np.ndarray]:
+    """Price an option via Crank-Nicolson finite differences with PSOR.
+
+    Uses a Cython-compiled kernel for the Projected Successive
+    Over-Relaxation iterations required for American early exercise.
+
+    Args:
+        contract: Option contract (supports American exercise).
+        market: Market state.
+        M: Number of spatial grid points.
+        N: Number of time steps.
+        omega: SOR relaxation parameter (1.0 < omega < 2.0).
+        tol: Convergence tolerance for PSOR iterations.
+        max_iter: Maximum PSOR iterations per time step.
+
+    Returns:
+        Option price as float or ndarray.
+    """
     b = np.broadcast(market.spot, contract.strike, contract.expiry, market.rate, market.volatility, market.dividend)
     
     S_arr = np.broadcast_to(market.spot, b.shape).astype(float).ravel()

@@ -112,6 +112,9 @@ def _sabr_vol_kernel(F: float, K: float, T: float, alpha: float,
                      beta: float, rho: float, nu: float) -> float:
     """Hagan's SABR implied volatility approximation kernel.
 
+    Includes edge-case guards for extreme moneyness, K→0, and nu→0
+    to prevent NaN/Inf in the Hagan breakdown zones.
+
     Args:
         F: Forward price.
         K: Strike price.
@@ -124,35 +127,51 @@ def _sabr_vol_kernel(F: float, K: float, T: float, alpha: float,
     Returns:
         SABR implied Black volatility for the given strike.
     """
+    K = max(K, 1e-10)
+    if T < 1e-10:
+        return alpha / max(K, 1e-10) ** (1.0 - beta)
+
+    if nu < 1e-10:
+        return alpha / (F * K) ** ((1.0 - beta) / 2.0)
+
     if abs(F - K) < 1e-12:
         FK_mid = F
         A = alpha / FK_mid ** (1.0 - beta)
         B1 = ((1.0 - beta) ** 2 / 24.0) * alpha ** 2 / FK_mid ** (2.0 - 2.0 * beta)
         B2 = 0.25 * rho * beta * nu * alpha / FK_mid ** (1.0 - beta)
         B3 = (2.0 - 3.0 * rho ** 2) / 24.0 * nu ** 2
-        return A * (1.0 + (B1 + B2 + B3) * T)
+        return max(A * (1.0 + (B1 + B2 + B3) * T), 1e-8)
 
     FK = F * K
     FK_beta = FK ** ((1.0 - beta) / 2.0)
     log_FK = np.log(F / K)
 
+    if abs(log_FK) > 3.0:
+        return alpha / FK_beta
+
     denom = FK_beta * (1.0 + (1.0 - beta) ** 2 / 24.0 * log_FK ** 2
                        + (1.0 - beta) ** 4 / 1920.0 * log_FK ** 4)
 
     z = (nu / alpha) * FK_beta * log_FK
-    sqrt_term = np.sqrt(1.0 - 2.0 * rho * z + z ** 2)
-    x_z = np.log((sqrt_term + z - rho) / (1.0 - rho))
-
-    if abs(x_z) < 1e-12:
+    disc = 1.0 - 2.0 * rho * z + z ** 2
+    if disc < 0.0:
+        disc = 1e-12
+    sqrt_term = np.sqrt(disc)
+    arg = (sqrt_term + z - rho) / (1.0 - rho)
+    if arg < 1e-12:
         zeta = 1.0
     else:
-        zeta = z / x_z
+        x_z = np.log(arg)
+        if abs(x_z) < 1e-12:
+            zeta = 1.0
+        else:
+            zeta = z / x_z
 
     B1 = ((1.0 - beta) ** 2 / 24.0) * alpha ** 2 / FK ** (1.0 - beta)
     B2 = 0.25 * rho * beta * nu * alpha / FK_beta
     B3 = (2.0 - 3.0 * rho ** 2) / 24.0 * nu ** 2
 
-    return (alpha / denom) * zeta * (1.0 + (B1 + B2 + B3) * T)
+    return max((alpha / denom) * zeta * (1.0 + (B1 + B2 + B3) * T), 1e-8)
 
 
 def sabr_implied_vol(F: float, K: np.ndarray, T: float, alpha: float,
