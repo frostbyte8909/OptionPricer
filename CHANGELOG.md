@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.2.1
+
+[+] README: development install, build/grpc, PyPI links, and benchmark methodology for the speed table
+[+] CONTRIBUTING.md with tests, benchmarks, local build, and PyPI release (OIDC) checklist
+[+] `make bench` target; `tests/bench_v2.py --json` and `--smoke` CLI flags
+[+] Pytest smoke tests for benchmark harness (finite latency, no crash)
+[+] GitHub Actions CI (Ubuntu, Python 3.10 / 3.12) with editable install and pytest
+[+] GitHub Actions release workflow publishing **sdist** to PyPI via Trusted Publishing
+[+] `pyproject.toml`: PyPI/Homepage/Issues URLs, `pytest` markers, `build`/`twine` in `dev` extras
+
 ## v0.2.0
 
 [+] Heston stochastic volatility model (precision)

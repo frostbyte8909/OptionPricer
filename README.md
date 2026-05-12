@@ -2,16 +2,113 @@
 
 A high-performance quantitative option pricing library with Cython AOT compilation, Numba JIT, stochastic volatility models, and institutional-grade numerical precision.
 
+**Links:** [PyPI](https://pypi.org/project/optionpricer/) · [Source / issues](https://github.com/palash/optionpricer) · [Changelog](https://github.com/palash/optionpricer/blob/main/CHANGELOG.md)
+
 ## Installation
 
 ```bash
 pip install optionpricer
 ```
 
+PyPI currently publishes **source distributions** (`sdist`) only. Installing from PyPI compiles Cython extensions on your machine; you need a C compiler, Python headers, and **OpenMP** (see [Building extensions](#building-extensions)).
+
 For faster implied volatility (Jäckel's "Let's Be Rational"):
+
 ```bash
 pip install optionpricer[fast]
 ```
+
+Optional developer and benchmark dependencies:
+
+```bash
+pip install optionpricer[dev]
+```
+
+(`dev` includes `pytest`, `psutil`, and `memory_profiler` used by the benchmark suite.)
+
+## Development install
+
+From a git clone:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -U pip
+pip install -e ".[dev]"
+```
+
+Run the test suite:
+
+```bash
+make test
+# or: pytest tests/ -v
+```
+
+Contributor workflow (releases, PyPI OIDC, benchmarks): see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Building extensions
+
+Extensions are defined in [setup.py](setup.py) (`_binomial_cy`, `_fdm_cy`). Editable install compiles them automatically when possible.
+
+- **Linux:** Install a compiler toolchain (e.g. `build-essential` on Debian/Ubuntu). GCC’s `-fopenmp` links against `libgomp`.
+- **macOS:** Install LLVM OpenMP via Homebrew, e.g. `brew install libomp`, so that include and library paths under `/opt/homebrew` or `/usr/local` match [setup.py](setup.py).
+
+Create `sdist` / wheel locally:
+
+```bash
+pip install build
+python -m build
+```
+
+Release automation uploads **`sdist` only** (no prebuilt cross-platform wheels yet). See [CONTRIBUTING.md](CONTRIBUTING.md) for the release checklist.
+
+## gRPC API
+
+Protobuf / gRPC stubs are generated from [optionpricer/api/pricer.proto](optionpricer/api/pricer.proto):
+
+```bash
+make grpc
+```
+
+Run the server (after installing `grpcio` and `grpcio-tools` if not already present):
+
+```bash
+python -m optionpricer.api.server
+```
+
+## Benchmarks and speed table
+
+Wall times **depend on CPU, compiler, and load**. The table below lists **order-of-magnitude representative latencies** from a single reference run of [`tests/bench_v2.py`](tests/bench_v2.py). Reproduce on your machine:
+
+```bash
+make bench
+# or: python tests/bench_v2.py
+```
+
+Machine-readable output (for CI artifacts or tooling):
+
+```bash
+python tests/bench_v2.py --json
+```
+
+**Mapping:** where a **Bench kernel** name appears, it matches a row in the benchmark report. Other models are not in the automated suite; figures are indicative only.
+
+| Model | Module | Style | Rep. latency* | Bench kernel |
+|:---|:---|:---|:---|:---|
+| Black-Scholes (erfc) | `black_scholes()` | European | ~0.18 ms | BSM scalar |
+| Binomial Tree (Cython/OpenMP) | `build_tree()` | American/European | ~0.3 ms (N=1000) | Binomial N=1000 |
+| Crank-Nicolson FDM (Cython) | `crank_nicolson_fdm()` | American/European | ~3 ms (200×200 grid) | FDM 200x200 |
+| Monte Carlo (Sobol + CV) | `monte_carlo_prices()` | European vanilla | ~1 ms (16K paths) | MC 16K paths |
+| Merton Jump-Diffusion | `merton_jump_diffusion()` | European | ~0.15 ms | Merton JD |
+| Carr-Madan FFT | `carr_madan_fft()` | European | ~0.23 ms | FFT 4096 |
+| Heston Stochastic Vol | `heston_price()` | European | ~0.5 ms | — |
+| Bates SVJD | `bates_price()` | European | ~0.5 ms | — |
+| Quanto | `quanto_price()` | European | ~0.1 ms | — |
+| Multi-Asset Basket (MC) | `basket_option()` | European | ~50 ms | — |
+| Bjerksund-Stensland | `bjerksund_stensland_american()` | American | ~0.1 ms | — |
+| Barrier (Analytical) | `barrier_analytical()` | European | ~0.1 ms | — |
+
+\*Median wall-clock ms from `bench_v2` where listed; otherwise typical single-call order of magnitude on a laptop-class CPU.
 
 ## Quick Start
 
@@ -33,23 +130,6 @@ from optionpricer import aad_greeks
 greeks = aad_greeks(contract, market)
 # -> {delta, gamma, vega, theta, rho, vanna, volga, charm}
 ```
-
-## Pricing Models
-
-| Model | Module | Style | Speed |
-|:---|:---|:---|:---|
-| Black-Scholes (erfc) | `black_scholes()` | European | ~0.18 ms |
-| Binomial Tree (Cython/OpenMP) | `build_tree()` | American/European | ~0.3 ms (N=1000) |
-| Crank-Nicolson FDM (Cython) | `crank_nicolson_fdm()` | American/European | ~3.3 ms (200×200) |
-| Monte Carlo (Sobol + CV) | `monte_carlo_prices()` | All | ~1.0 ms (16K) |
-| Merton Jump-Diffusion | `merton_jump_diffusion()` | European | ~0.15 ms |
-| Carr-Madan FFT | `carr_madan_fft()` | European | ~0.23 ms |
-| Heston Stochastic Vol | `heston_price()` | European | ~0.5 ms |
-| Bates SVJD | `bates_price()` | European | ~0.5 ms |
-| Quanto | `quanto_price()` | European | ~0.1 ms |
-| Multi-Asset Basket (MC) | `basket_option()` | European | ~50 ms |
-| Bjerksund-Stensland | `bjerksund_stensland_american()` | American | ~0.1 ms |
-| Barrier (Analytical) | `barrier_analytical()` | European | ~0.1 ms |
 
 ## Analytics
 

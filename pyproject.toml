@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "optionpricer"
-version = "0.2.0"
+version = "0.2.1"
 description = "High-performance quantitative option pricing with Cython, Numba, and stochastic volatility models."
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -28,8 +28,18 @@ classifiers = [
 
 [project.optional-dependencies]
 fast = ["py_lets_be_rational"]
-dev = ["pytest", "psutil", "memory_profiler"]
+dev = ["pytest", "psutil", "memory_profiler", "build", "twine"]
 
 [project.urls]
+Homepage = "https://github.com/palash/optionpricer"
+Documentation = "https://github.com/palash/optionpricer#readme"
 Repository = "https://github.com/palash/optionpricer"
 Changelog = "https://github.com/palash/optionpricer/blob/main/CHANGELOG.md"
+Issues = "https://github.com/palash/optionpricer/issues"
+
+[tool.pytest.ini_options]
+markers = [
+    "bench_smoke: fast benchmark smoke (optional grouping)",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

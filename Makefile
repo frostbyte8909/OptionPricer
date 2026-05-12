@@ -1,4 +1,4 @@
-.PHONY: all build clean test grpc
+.PHONY: all build clean test bench grpc
 
 PYTHON ?= .venv/bin/python
 PIP ?= .venv/bin/pip
@@ -20,6 +20,10 @@ clean:
 test:
 	@echo "Running test suite..."
 	$(PYTEST) tests/ -v
+
+bench:
+	@echo "Running benchmark suite..."
+	$(PYTHON) tests/bench_v2.py
 
 grpc:
 	@echo "Compiling Protobuf/gRPC schemas..."

@@ -1,0 +1,33 @@
+# Publish sdist to PyPI when a GitHub Release is published.
+# Configure Trusted Publishing on https://pypi.org for this repo + workflow.
+
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build
+        run: python -m pip install -U pip build
+
+      - name: Build sdist
+        run: python -m build --sdist
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
