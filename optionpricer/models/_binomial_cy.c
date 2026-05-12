@@ -24,12 +24,12 @@
         "library_dirs": [
             "/opt/homebrew/opt/libomp/lib"
         ],
-        "name": "optionpricer.models._fdm_cy",
+        "name": "optionpricer.models._binomial_cy",
         "sources": [
-            "optionpricer/models/_fdm_cy.pyx"
+            "optionpricer/models/_binomial_cy.pyx"
         ]
     },
-    "module_name": "optionpricer.models._fdm_cy"
+    "module_name": "optionpricer.models._binomial_cy"
 }
 END: Cython Metadata */
 
@@ -1147,12 +1147,11 @@ static int __Pyx_init_co_variables(void) {
   #endif
 #endif
 
-#define __PYX_HAVE__optionpricer__models___fdm_cy
-#define __PYX_HAVE_API__optionpricer__models___fdm_cy
+#define __PYX_HAVE__optionpricer__models___binomial_cy
+#define __PYX_HAVE_API__optionpricer__models___binomial_cy
 /* Early includes */
 #include <string.h>
 #include <stdlib.h>
-#include <math.h>
 #include <stdio.h>
 
     /* Using NumPy API declarations from "numpy/__init__.cython-30.pxd" */
@@ -1401,7 +1400,7 @@ static const char *__pyx_filename;
 /* #### Code section: filename_table ### */
 
 static const char* const __pyx_f[] = {
-  "optionpricer/models/_fdm_cy.pyx",
+  "optionpricer/models/_binomial_cy.pyx",
   "<stringsource>",
   "../../../private/var/folders/qp/gf7zrltx37s1cx048mqbkw400000gn/T/pip-build-env-vl656zp6/overlay/lib/python3.13/site-packages/numpy/__init__.cython-30.pxd",
   "cpython/type.pxd",
@@ -1812,18 +1811,6 @@ typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
 /* Declarations.proto */
 #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
   #ifdef __cplusplus
-    typedef ::std::complex< double > __pyx_t_double_complex;
-  #else
-    typedef double _Complex __pyx_t_double_complex;
-  #endif
-#else
-    typedef struct { double real, imag; } __pyx_t_double_complex;
-#endif
-static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double, double);
-
-/* Declarations.proto */
-#if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
-  #ifdef __cplusplus
     typedef ::std::complex< float > __pyx_t_float_complex;
   #else
     typedef float _Complex __pyx_t_float_complex;
@@ -1832,6 +1819,18 @@ static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(do
     typedef struct { float real, imag; } __pyx_t_float_complex;
 #endif
 static CYTHON_INLINE __pyx_t_float_complex __pyx_t_float_complex_from_parts(float, float);
+
+/* Declarations.proto */
+#if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
+  #ifdef __cplusplus
+    typedef ::std::complex< double > __pyx_t_double_complex;
+  #else
+    typedef double _Complex __pyx_t_double_complex;
+  #endif
+#else
+    typedef struct { double real, imag; } __pyx_t_double_complex;
+#endif
+static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double, double);
 
 /* Declarations.proto */
 #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
@@ -2667,31 +2666,6 @@ static CYTHON_INLINE long __Pyx_div_long(long, long, int b_is_constant);
 /* PyImportError_Check.proto */
 #define __Pyx_PyExc_ImportError_Check(obj)  __Pyx_TypeCheck(obj, PyExc_ImportError)
 
-/* RealImag.proto (used by SoftComplexToDouble) */
-#if CYTHON_CCOMPLEX
-  #ifdef __cplusplus
-    #define __Pyx_CREAL(z) ((z).real())
-    #define __Pyx_CIMAG(z) ((z).imag())
-  #else
-    #define __Pyx_CREAL(z) (__real__(z))
-    #define __Pyx_CIMAG(z) (__imag__(z))
-  #endif
-#else
-    #define __Pyx_CREAL(z) ((z).real)
-    #define __Pyx_CIMAG(z) ((z).imag)
-#endif
-#if defined(__cplusplus) && CYTHON_CCOMPLEX\
-        && (defined(_WIN32) || defined(__clang__) || (defined(__GNUC__) && (__GNUC__ >= 5 || __GNUC__ == 4 && __GNUC_MINOR__ >= 4 )) || __cplusplus >= 201103)
-    #define __Pyx_SET_CREAL(z,x) ((z).real(x))
-    #define __Pyx_SET_CIMAG(z,y) ((z).imag(y))
-#else
-    #define __Pyx_SET_CREAL(z,x) __Pyx_CREAL(z) = (x)
-    #define __Pyx_SET_CIMAG(z,y) __Pyx_CIMAG(z) = (y)
-#endif
-
-/* SoftComplexToDouble.proto */
-static double __Pyx_SoftComplexToDouble(__pyx_t_double_complex value, int have_nogil);
-
 /* ErrOccurredWithGIL.proto */
 static CYTHON_INLINE int __Pyx_ErrOccurredWithGIL(void);
 
@@ -3003,42 +2977,26 @@ static int __Pyx_ValidateAndInit_memviewslice(
 /* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_double(PyObject *, int writable_flag);
 
-/* Arithmetic.proto */
-#if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
-    #define __Pyx_c_eq_double(a, b)   ((a)==(b))
-    #define __Pyx_c_sum_double(a, b)  ((a)+(b))
-    #define __Pyx_c_diff_double(a, b) ((a)-(b))
-    #define __Pyx_c_prod_double(a, b) ((a)*(b))
-    #define __Pyx_c_quot_double(a, b) ((a)/(b))
-    #define __Pyx_c_neg_double(a)     (-(a))
+/* RealImag.proto */
+#if CYTHON_CCOMPLEX
   #ifdef __cplusplus
-    #define __Pyx_c_is_zero_double(z) ((z)==(double)0)
-    #define __Pyx_c_conj_double(z)    (::std::conj(z))
-    #if 1
-        #define __Pyx_c_abs_double(z)     (::std::abs(z))
-        #define __Pyx_c_pow_double(a, b)  (::std::pow(a, b))
-    #endif
+    #define __Pyx_CREAL(z) ((z).real())
+    #define __Pyx_CIMAG(z) ((z).imag())
   #else
-    #define __Pyx_c_is_zero_double(z) ((z)==0)
-    #define __Pyx_c_conj_double(z)    (conj(z))
-    #if 1
-        #define __Pyx_c_abs_double(z)     (cabs(z))
-        #define __Pyx_c_pow_double(a, b)  (cpow(a, b))
-    #endif
- #endif
+    #define __Pyx_CREAL(z) (__real__(z))
+    #define __Pyx_CIMAG(z) (__imag__(z))
+  #endif
 #else
-    static CYTHON_INLINE int __Pyx_c_eq_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_sum_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_diff_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_prod_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_neg_double(__pyx_t_double_complex);
-    static CYTHON_INLINE int __Pyx_c_is_zero_double(__pyx_t_double_complex);
-    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_conj_double(__pyx_t_double_complex);
-    #if 1
-        static CYTHON_INLINE double __Pyx_c_abs_double(__pyx_t_double_complex);
-        static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_pow_double(__pyx_t_double_complex, __pyx_t_double_complex);
-    #endif
+    #define __Pyx_CREAL(z) ((z).real)
+    #define __Pyx_CIMAG(z) ((z).imag)
+#endif
+#if defined(__cplusplus) && CYTHON_CCOMPLEX\
+        && (defined(_WIN32) || defined(__clang__) || (defined(__GNUC__) && (__GNUC__ >= 5 || __GNUC__ == 4 && __GNUC_MINOR__ >= 4 )) || __cplusplus >= 201103)
+    #define __Pyx_SET_CREAL(z,x) ((z).real(x))
+    #define __Pyx_SET_CIMAG(z,y) ((z).imag(y))
+#else
+    #define __Pyx_SET_CREAL(z,x) __Pyx_CREAL(z) = (x)
+    #define __Pyx_SET_CIMAG(z,y) __Pyx_CIMAG(z) = (y)
 #endif
 
 /* Arithmetic.proto */
@@ -3076,6 +3034,44 @@ static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_dou
     #if 1
         static CYTHON_INLINE float __Pyx_c_abs_float(__pyx_t_float_complex);
         static CYTHON_INLINE __pyx_t_float_complex __Pyx_c_pow_float(__pyx_t_float_complex, __pyx_t_float_complex);
+    #endif
+#endif
+
+/* Arithmetic.proto */
+#if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
+    #define __Pyx_c_eq_double(a, b)   ((a)==(b))
+    #define __Pyx_c_sum_double(a, b)  ((a)+(b))
+    #define __Pyx_c_diff_double(a, b) ((a)-(b))
+    #define __Pyx_c_prod_double(a, b) ((a)*(b))
+    #define __Pyx_c_quot_double(a, b) ((a)/(b))
+    #define __Pyx_c_neg_double(a)     (-(a))
+  #ifdef __cplusplus
+    #define __Pyx_c_is_zero_double(z) ((z)==(double)0)
+    #define __Pyx_c_conj_double(z)    (::std::conj(z))
+    #if 1
+        #define __Pyx_c_abs_double(z)     (::std::abs(z))
+        #define __Pyx_c_pow_double(a, b)  (::std::pow(a, b))
+    #endif
+  #else
+    #define __Pyx_c_is_zero_double(z) ((z)==0)
+    #define __Pyx_c_conj_double(z)    (conj(z))
+    #if 1
+        #define __Pyx_c_abs_double(z)     (cabs(z))
+        #define __Pyx_c_pow_double(a, b)  (cpow(a, b))
+    #endif
+ #endif
+#else
+    static CYTHON_INLINE int __Pyx_c_eq_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_sum_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_diff_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_prod_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex, __pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_neg_double(__pyx_t_double_complex);
+    static CYTHON_INLINE int __Pyx_c_is_zero_double(__pyx_t_double_complex);
+    static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_conj_double(__pyx_t_double_complex);
+    #if 1
+        static CYTHON_INLINE double __Pyx_c_abs_double(__pyx_t_double_complex);
+        static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_pow_double(__pyx_t_double_complex, __pyx_t_double_complex);
     #endif
 #endif
 
@@ -3146,9 +3142,6 @@ static int __Pyx_VectorcallBuilder_AddArgStr(const char *key, PyObject *value, P
 #endif
 
 /* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyLong_From_int(int value);
-
-/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyLong_From_long(long value);
 
 /* PyObjectCall2Args.proto (used by PyObjectCallMethod1) */
@@ -3165,6 +3158,9 @@ static CYTHON_INLINE int __Pyx_CheckUnpickleChecksum(long checksum, long checksu
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyLong_As_long(PyObject *);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyLong_From_int(int value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE char __Pyx_PyLong_As_char(PyObject *);
@@ -3284,8 +3280,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy_7ndarray_4data_data(PyArrayObject *__p
 
 /* Module declarations from "libc.stdlib" */
 
-/* Module declarations from "libc.math" */
-
 /* Module declarations from "libc.stdio" */
 
 /* Module declarations from "__builtin__" */
@@ -3302,7 +3296,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy_7ndarray_4data_data(PyArrayObject *__p
 
 /* Module declarations from "numpy" */
 
-/* Module declarations from "optionpricer.models._fdm_cy" */
+/* Module declarations from "optionpricer.models._binomial_cy" */
 static PyObject *__pyx_collections_abc_Sequence = 0;
 static PyObject *generic = 0;
 static PyObject *strided = 0;
@@ -3311,8 +3305,8 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static void __pyx_f_12optionpricer_6models_7_fdm_cy__solve_single_fdm(int, double, double, double, double, double, double, double *, double *, double *, double *, double *, double *, int, int, int, int, double, double, int, __Pyx_memviewslice); /*proto*/
-static void __pyx_f_12optionpricer_6models_7_fdm_cy__crank_nicolson_psor_vectorized(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, int, int, int, double, double, int, int __pyx_skip_dispatch); /*proto*/
+static void __pyx_f_12optionpricer_6models_12_binomial_cy__solve_single_binomial(int, double, double, double, double, double, double, int, int, int, double *, __Pyx_memviewslice); /*proto*/
+static void __pyx_f_12optionpricer_6models_12_binomial_cy__build_tree_cython_vectorized(__Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, double, double, double, double, int, int, int, int __pyx_skip_dispatch); /*proto*/
 static int __pyx_array_allocate_buffer(struct __pyx_array_obj *); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char const *, char *); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo const *); /*proto*/
@@ -3350,11 +3344,11 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, 
 /* #### Code section: typeinfo ### */
 static const __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
 /* #### Code section: before_global_var ### */
-#define __Pyx_MODULE_NAME "optionpricer.models._fdm_cy"
-extern int __pyx_module_is_main_optionpricer__models___fdm_cy;
-int __pyx_module_is_main_optionpricer__models___fdm_cy = 0;
+#define __Pyx_MODULE_NAME "optionpricer.models._binomial_cy"
+extern int __pyx_module_is_main_optionpricer__models___binomial_cy;
+int __pyx_module_is_main_optionpricer__models___binomial_cy = 0;
 
-/* Implementation of "optionpricer.models._fdm_cy" */
+/* Implementation of "optionpricer.models._binomial_cy" */
 /* #### Code section: global_var ### */
 static PyObject *__pyx_builtin___import__;
 static PyObject *__pyx_builtin_enumerate;
@@ -3406,7 +3400,7 @@ static void __pyx_memoryviewslice___pyx_pf_15View_dot_MemoryView_16_memoryviewsl
 static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUSED struct __pyx_memoryviewslice_obj *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_12optionpricer_6models_7_fdm_cy__crank_nicolson_psor_vectorized(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_sigma_arr, __Pyx_memviewslice __pyx_v_q_arr, __Pyx_memviewslice __pyx_v_result_arr, int __pyx_v_M, int __pyx_v_N, int __pyx_v_is_call, int __pyx_v_american, double __pyx_v_omega, double __pyx_v_tol, int __pyx_v_max_iter); /* proto */
+static PyObject *__pyx_pf_12optionpricer_6models_12_binomial_cy__build_tree_cython_vectorized(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_result_arr, double __pyx_v_u, double __pyx_v_d, double __pyx_v_df, double __pyx_v_p, int __pyx_v_N, int __pyx_v_is_call, int __pyx_v_american); /* proto */
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -3461,7 +3455,7 @@ typedef struct {
   PyObject *__pyx_slice[1];
   PyObject *__pyx_tuple[1];
   PyObject *__pyx_codeobj_tab[1];
-  PyObject *__pyx_string_tab[133];
+  PyObject *__pyx_string_tab[129];
   PyObject *__pyx_number_tab[4];
 /* #### Code section: module_state_contents ### */
 /* CommonTypesMetaclass.module_state_decls */
@@ -3544,7 +3538,7 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_kp_u_numpy__core_multiarray_failed_to __pyx_string_tab[38]
 #define __pyx_kp_u_numpy__core_umath_failed_to_impo __pyx_string_tab[39]
 #define __pyx_kp_u_object __pyx_string_tab[40]
-#define __pyx_kp_u_optionpricer_models__fdm_cy_pyx __pyx_string_tab[41]
+#define __pyx_kp_u_optionpricer_models__binomial_cy_2 __pyx_string_tab[41]
 #define __pyx_kp_u_strided_and_direct __pyx_string_tab[42]
 #define __pyx_kp_u_strided_and_direct_or_indirect __pyx_string_tab[43]
 #define __pyx_kp_u_strided_and_indirect __pyx_string_tab[44]
@@ -3553,24 +3547,24 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_n_u_ASCII __pyx_string_tab[47]
 #define __pyx_n_u_Ellipsis __pyx_string_tab[48]
 #define __pyx_n_u_K_arr __pyx_string_tab[49]
-#define __pyx_n_u_M __pyx_string_tab[50]
-#define __pyx_n_u_N __pyx_string_tab[51]
-#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[52]
-#define __pyx_n_u_S_arr __pyx_string_tab[53]
-#define __pyx_n_u_Sequence __pyx_string_tab[54]
-#define __pyx_n_u_T_arr __pyx_string_tab[55]
-#define __pyx_n_u_View_MemoryView __pyx_string_tab[56]
-#define __pyx_n_u_abc __pyx_string_tab[57]
-#define __pyx_n_u_allocate_buffer __pyx_string_tab[58]
-#define __pyx_n_u_american __pyx_string_tab[59]
-#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[60]
-#define __pyx_n_u_base __pyx_string_tab[61]
-#define __pyx_n_u_c __pyx_string_tab[62]
-#define __pyx_n_u_class __pyx_string_tab[63]
-#define __pyx_n_u_class_getitem __pyx_string_tab[64]
-#define __pyx_n_u_cline_in_traceback __pyx_string_tab[65]
-#define __pyx_n_u_count __pyx_string_tab[66]
-#define __pyx_n_u_crank_nicolson_psor_vectorized __pyx_string_tab[67]
+#define __pyx_n_u_N __pyx_string_tab[50]
+#define __pyx_n_u_Pyx_PyDict_NextRef __pyx_string_tab[51]
+#define __pyx_n_u_S_arr __pyx_string_tab[52]
+#define __pyx_n_u_Sequence __pyx_string_tab[53]
+#define __pyx_n_u_View_MemoryView __pyx_string_tab[54]
+#define __pyx_n_u_abc __pyx_string_tab[55]
+#define __pyx_n_u_allocate_buffer __pyx_string_tab[56]
+#define __pyx_n_u_american __pyx_string_tab[57]
+#define __pyx_n_u_asyncio_coroutines __pyx_string_tab[58]
+#define __pyx_n_u_base __pyx_string_tab[59]
+#define __pyx_n_u_build_tree_cython_vectorized __pyx_string_tab[60]
+#define __pyx_n_u_c __pyx_string_tab[61]
+#define __pyx_n_u_class __pyx_string_tab[62]
+#define __pyx_n_u_class_getitem __pyx_string_tab[63]
+#define __pyx_n_u_cline_in_traceback __pyx_string_tab[64]
+#define __pyx_n_u_count __pyx_string_tab[65]
+#define __pyx_n_u_d __pyx_string_tab[66]
+#define __pyx_n_u_df __pyx_string_tab[67]
 #define __pyx_n_u_dict __pyx_string_tab[68]
 #define __pyx_n_u_dtype_is_object __pyx_string_tab[69]
 #define __pyx_n_u_encode __pyx_string_tab[70]
@@ -3589,53 +3583,49 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_n_u_items __pyx_string_tab[83]
 #define __pyx_n_u_itemsize __pyx_string_tab[84]
 #define __pyx_n_u_main __pyx_string_tab[85]
-#define __pyx_n_u_max_iter __pyx_string_tab[86]
-#define __pyx_n_u_memview __pyx_string_tab[87]
-#define __pyx_n_u_mode __pyx_string_tab[88]
-#define __pyx_n_u_module __pyx_string_tab[89]
-#define __pyx_n_u_name __pyx_string_tab[90]
-#define __pyx_n_u_name_2 __pyx_string_tab[91]
-#define __pyx_n_u_ndim __pyx_string_tab[92]
-#define __pyx_n_u_new __pyx_string_tab[93]
-#define __pyx_n_u_np __pyx_string_tab[94]
-#define __pyx_n_u_numpy __pyx_string_tab[95]
-#define __pyx_n_u_obj __pyx_string_tab[96]
-#define __pyx_n_u_omega __pyx_string_tab[97]
-#define __pyx_n_u_optionpricer_models__fdm_cy __pyx_string_tab[98]
-#define __pyx_n_u_pack __pyx_string_tab[99]
-#define __pyx_n_u_pop __pyx_string_tab[100]
-#define __pyx_n_u_pyx_checksum __pyx_string_tab[101]
-#define __pyx_n_u_pyx_state __pyx_string_tab[102]
-#define __pyx_n_u_pyx_type __pyx_string_tab[103]
-#define __pyx_n_u_pyx_unpickle_Enum __pyx_string_tab[104]
-#define __pyx_n_u_pyx_vtable __pyx_string_tab[105]
-#define __pyx_n_u_q_arr __pyx_string_tab[106]
-#define __pyx_n_u_qualname __pyx_string_tab[107]
-#define __pyx_n_u_r_arr __pyx_string_tab[108]
-#define __pyx_n_u_reduce __pyx_string_tab[109]
-#define __pyx_n_u_reduce_cython __pyx_string_tab[110]
-#define __pyx_n_u_reduce_ex __pyx_string_tab[111]
-#define __pyx_n_u_register __pyx_string_tab[112]
-#define __pyx_n_u_result_arr __pyx_string_tab[113]
-#define __pyx_n_u_set_name __pyx_string_tab[114]
-#define __pyx_n_u_setdefault __pyx_string_tab[115]
-#define __pyx_n_u_setstate __pyx_string_tab[116]
-#define __pyx_n_u_setstate_cython __pyx_string_tab[117]
-#define __pyx_n_u_shape __pyx_string_tab[118]
-#define __pyx_n_u_sigma_arr __pyx_string_tab[119]
-#define __pyx_n_u_size __pyx_string_tab[120]
-#define __pyx_n_u_start __pyx_string_tab[121]
-#define __pyx_n_u_step __pyx_string_tab[122]
-#define __pyx_n_u_stop __pyx_string_tab[123]
-#define __pyx_n_u_struct __pyx_string_tab[124]
-#define __pyx_n_u_test __pyx_string_tab[125]
-#define __pyx_n_u_tol __pyx_string_tab[126]
-#define __pyx_n_u_unpack __pyx_string_tab[127]
-#define __pyx_n_u_update __pyx_string_tab[128]
-#define __pyx_n_u_values __pyx_string_tab[129]
-#define __pyx_n_u_x __pyx_string_tab[130]
-#define __pyx_kp_b_iso88591_5_aq_YfA_Bb_2Q_YfA_Bb_2Q_YfA_Bb __pyx_string_tab[131]
-#define __pyx_n_b_O __pyx_string_tab[132]
+#define __pyx_n_u_memview __pyx_string_tab[86]
+#define __pyx_n_u_mode __pyx_string_tab[87]
+#define __pyx_n_u_module __pyx_string_tab[88]
+#define __pyx_n_u_name __pyx_string_tab[89]
+#define __pyx_n_u_name_2 __pyx_string_tab[90]
+#define __pyx_n_u_ndim __pyx_string_tab[91]
+#define __pyx_n_u_new __pyx_string_tab[92]
+#define __pyx_n_u_np __pyx_string_tab[93]
+#define __pyx_n_u_numpy __pyx_string_tab[94]
+#define __pyx_n_u_obj __pyx_string_tab[95]
+#define __pyx_n_u_optionpricer_models__binomial_cy __pyx_string_tab[96]
+#define __pyx_n_u_p __pyx_string_tab[97]
+#define __pyx_n_u_pack __pyx_string_tab[98]
+#define __pyx_n_u_pop __pyx_string_tab[99]
+#define __pyx_n_u_pyx_checksum __pyx_string_tab[100]
+#define __pyx_n_u_pyx_state __pyx_string_tab[101]
+#define __pyx_n_u_pyx_type __pyx_string_tab[102]
+#define __pyx_n_u_pyx_unpickle_Enum __pyx_string_tab[103]
+#define __pyx_n_u_pyx_vtable __pyx_string_tab[104]
+#define __pyx_n_u_qualname __pyx_string_tab[105]
+#define __pyx_n_u_reduce __pyx_string_tab[106]
+#define __pyx_n_u_reduce_cython __pyx_string_tab[107]
+#define __pyx_n_u_reduce_ex __pyx_string_tab[108]
+#define __pyx_n_u_register __pyx_string_tab[109]
+#define __pyx_n_u_result_arr __pyx_string_tab[110]
+#define __pyx_n_u_set_name __pyx_string_tab[111]
+#define __pyx_n_u_setdefault __pyx_string_tab[112]
+#define __pyx_n_u_setstate __pyx_string_tab[113]
+#define __pyx_n_u_setstate_cython __pyx_string_tab[114]
+#define __pyx_n_u_shape __pyx_string_tab[115]
+#define __pyx_n_u_size __pyx_string_tab[116]
+#define __pyx_n_u_start __pyx_string_tab[117]
+#define __pyx_n_u_step __pyx_string_tab[118]
+#define __pyx_n_u_stop __pyx_string_tab[119]
+#define __pyx_n_u_struct __pyx_string_tab[120]
+#define __pyx_n_u_test __pyx_string_tab[121]
+#define __pyx_n_u_u __pyx_string_tab[122]
+#define __pyx_n_u_unpack __pyx_string_tab[123]
+#define __pyx_n_u_update __pyx_string_tab[124]
+#define __pyx_n_u_values __pyx_string_tab[125]
+#define __pyx_n_u_x __pyx_string_tab[126]
+#define __pyx_kp_b_iso88591_5_aq_y_a_3b_Rq_1A_a_uAT_aq_s_c __pyx_string_tab[127]
+#define __pyx_n_b_O __pyx_string_tab[128]
 #define __pyx_int_0 __pyx_number_tab[0]
 #define __pyx_int_neg_1 __pyx_number_tab[1]
 #define __pyx_int_1 __pyx_number_tab[2]
@@ -3681,7 +3671,7 @@ static CYTHON_SMALL_CODE int __pyx_m_clear(PyObject *m) {
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_slice[i]); }
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_tuple[i]); }
   for (int i=0; i<1; ++i) { Py_CLEAR(clear_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<133; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<129; ++i) { Py_CLEAR(clear_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<4; ++i) { Py_CLEAR(clear_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_clear_contents ### */
 /* CommonTypesMetaclass.module_state_clear */
@@ -3732,7 +3722,7 @@ static CYTHON_SMALL_CODE int __pyx_m_traverse(PyObject *m, visitproc visit, void
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_slice[i]); }
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_tuple[i]); }
   for (int i=0; i<1; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_codeobj_tab[i]); }
-  for (int i=0; i<133; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
+  for (int i=0; i<129; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_string_tab[i]); }
   for (int i=0; i<4; ++i) { __Pyx_VISIT_CONST(traverse_module_state->__pyx_number_tab[i]); }
 /* #### Code section: module_state_traverse_contents ### */
 /* CommonTypesMetaclass.module_state_traverse */
@@ -18734,713 +18724,316 @@ static CYTHON_INLINE NPY_DATETIMEUNIT __pyx_f_5numpy_get_datetime64_unit(PyObjec
   return __pyx_r;
 }
 
-/* "optionpricer/models/_fdm_cy.pyx":8
+/* "optionpricer/models/_binomial_cy.pyx":7
  * cimport numpy as np
  * 
- * cdef void _solve_single_fdm(             # <<<<<<<<<<<<<<
- *     int k,
- *     double S_0, double K, double T, double r, double sigma, double q,
+ * cdef void _solve_single_binomial(             # <<<<<<<<<<<<<<
+ *     int k, double S, double K,
+ *     double u, double d, double df, double p,
 */
 
-static void __pyx_f_12optionpricer_6models_7_fdm_cy__solve_single_fdm(int __pyx_v_k, double __pyx_v_S_0, double __pyx_v_K, double __pyx_v_T, double __pyx_v_r, double __pyx_v_sigma, double __pyx_v_q, double *__pyx_v_alpha, double *__pyx_v_beta, double *__pyx_v_gamma, double *__pyx_v_V_old, double *__pyx_v_V_new, double *__pyx_v_RHS, int __pyx_v_M, int __pyx_v_N, int __pyx_v_is_call, int __pyx_v_american, double __pyx_v_omega, double __pyx_v_tol, int __pyx_v_max_iter, __Pyx_memviewslice __pyx_v_result_arr) {
+static void __pyx_f_12optionpricer_6models_12_binomial_cy__solve_single_binomial(int __pyx_v_k, double __pyx_v_S, double __pyx_v_K, double __pyx_v_u, double __pyx_v_d, double __pyx_v_df, double __pyx_v_p, int __pyx_v_N, int __pyx_v_is_call, int __pyx_v_american, double *__pyx_v_option, __Pyx_memviewslice __pyx_v_result_arr) {
   int __pyx_v_i;
   int __pyx_v_j;
-  int __pyx_v_iter_count;
-  double __pyx_v_dt;
-  double __pyx_v_dS;
-  double __pyx_v_S_max;
-  double __pyx_v_S_j;
-  double __pyx_v_tau;
-  double __pyx_v_error;
-  double __pyx_v_diff;
-  double __pyx_v_y;
   double __pyx_v_intrinsic;
-  double __pyx_t_1;
-  int __pyx_t_2;
+  double __pyx_v_S_ij;
+  long __pyx_t_1;
+  long __pyx_t_2;
   int __pyx_t_3;
-  int __pyx_t_4;
-  long __pyx_t_5;
-  long __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_t_8;
-  int __pyx_t_9;
-  Py_ssize_t __pyx_t_10;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  PyGILState_STATE __pyx_gilstate_save;
+  double __pyx_t_4;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
 
-  /* "optionpricer/models/_fdm_cy.pyx":21
- *     cdef double error, diff, y, intrinsic
+  /* "optionpricer/models/_binomial_cy.pyx":16
+ *     cdef double intrinsic, S_ij
  * 
- *     S_max = S_0 * exp((r - q) * T + 4.0 * sigma * (T**0.5))             # <<<<<<<<<<<<<<
- *     dS = S_max / M
- *     dt = T / N
-*/
-  __pyx_t_1 = __Pyx_SoftComplexToDouble(__Pyx_c_sum_double(__pyx_t_double_complex_from_parts(((__pyx_v_r - __pyx_v_q) * __pyx_v_T), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts((4.0 * __pyx_v_sigma), 0), __Pyx_c_pow_double(__pyx_t_double_complex_from_parts(__pyx_v_T, 0), __pyx_t_double_complex_from_parts(0.5, 0)))), 2); if (unlikely(__pyx_t_1 == ((double)-1) && __Pyx_ErrOccurredWithGIL())) __PYX_ERR(0, 21, __pyx_L1_error)
-  __pyx_v_S_max = (__pyx_v_S_0 * exp(__pyx_t_1));
-
-  /* "optionpricer/models/_fdm_cy.pyx":22
- * 
- *     S_max = S_0 * exp((r - q) * T + 4.0 * sigma * (T**0.5))
- *     dS = S_max / M             # <<<<<<<<<<<<<<
- *     dt = T / N
- * 
-*/
-  __pyx_v_dS = (__pyx_v_S_max / ((double)__pyx_v_M));
-
-  /* "optionpricer/models/_fdm_cy.pyx":23
- *     S_max = S_0 * exp((r - q) * T + 4.0 * sigma * (T**0.5))
- *     dS = S_max / M
- *     dt = T / N             # <<<<<<<<<<<<<<
- * 
- *     for j in range(1, M):
-*/
-  __pyx_v_dt = (__pyx_v_T / ((double)__pyx_v_N));
-
-  /* "optionpricer/models/_fdm_cy.pyx":25
- *     dt = T / N
- * 
- *     for j in range(1, M):             # <<<<<<<<<<<<<<
- *         alpha[j] = 0.25 * dt * ((sigma * sigma * j * j) - (r - q) * j)
- *         beta[j]  = -0.5 * dt * ((sigma * sigma * j * j) + r)
-*/
-  __pyx_t_2 = __pyx_v_M;
-  __pyx_t_3 = __pyx_t_2;
-  for (__pyx_t_4 = 1; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-    __pyx_v_j = __pyx_t_4;
-
-    /* "optionpricer/models/_fdm_cy.pyx":26
- * 
- *     for j in range(1, M):
- *         alpha[j] = 0.25 * dt * ((sigma * sigma * j * j) - (r - q) * j)             # <<<<<<<<<<<<<<
- *         beta[j]  = -0.5 * dt * ((sigma * sigma * j * j) + r)
- *         gamma[j] = 0.25 * dt * ((sigma * sigma * j * j) + (r - q) * j)
-*/
-    (__pyx_v_alpha[__pyx_v_j]) = ((0.25 * __pyx_v_dt) * ((((__pyx_v_sigma * __pyx_v_sigma) * __pyx_v_j) * __pyx_v_j) - ((__pyx_v_r - __pyx_v_q) * __pyx_v_j)));
-
-    /* "optionpricer/models/_fdm_cy.pyx":27
- *     for j in range(1, M):
- *         alpha[j] = 0.25 * dt * ((sigma * sigma * j * j) - (r - q) * j)
- *         beta[j]  = -0.5 * dt * ((sigma * sigma * j * j) + r)             # <<<<<<<<<<<<<<
- *         gamma[j] = 0.25 * dt * ((sigma * sigma * j * j) + (r - q) * j)
- * 
-*/
-    (__pyx_v_beta[__pyx_v_j]) = ((-0.5 * __pyx_v_dt) * ((((__pyx_v_sigma * __pyx_v_sigma) * __pyx_v_j) * __pyx_v_j) + __pyx_v_r));
-
-    /* "optionpricer/models/_fdm_cy.pyx":28
- *         alpha[j] = 0.25 * dt * ((sigma * sigma * j * j) - (r - q) * j)
- *         beta[j]  = -0.5 * dt * ((sigma * sigma * j * j) + r)
- *         gamma[j] = 0.25 * dt * ((sigma * sigma * j * j) + (r - q) * j)             # <<<<<<<<<<<<<<
- * 
- *     for j in range(M + 1):
-*/
-    (__pyx_v_gamma[__pyx_v_j]) = ((0.25 * __pyx_v_dt) * ((((__pyx_v_sigma * __pyx_v_sigma) * __pyx_v_j) * __pyx_v_j) + ((__pyx_v_r - __pyx_v_q) * __pyx_v_j)));
-  }
-
-  /* "optionpricer/models/_fdm_cy.pyx":30
- *         gamma[j] = 0.25 * dt * ((sigma * sigma * j * j) + (r - q) * j)
- * 
- *     for j in range(M + 1):             # <<<<<<<<<<<<<<
- *         S_j = j * dS
+ *     for j in range(N + 1):             # <<<<<<<<<<<<<<
+ *         S_ij = S * (u ** j) * (d ** (N - j))
  *         if is_call:
 */
-  __pyx_t_5 = (__pyx_v_M + 1);
-  __pyx_t_6 = __pyx_t_5;
-  for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_6; __pyx_t_2+=1) {
-    __pyx_v_j = __pyx_t_2;
+  __pyx_t_1 = (__pyx_v_N + 1);
+  __pyx_t_2 = __pyx_t_1;
+  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
+    __pyx_v_j = __pyx_t_3;
 
-    /* "optionpricer/models/_fdm_cy.pyx":31
+    /* "optionpricer/models/_binomial_cy.pyx":17
  * 
- *     for j in range(M + 1):
- *         S_j = j * dS             # <<<<<<<<<<<<<<
+ *     for j in range(N + 1):
+ *         S_ij = S * (u ** j) * (d ** (N - j))             # <<<<<<<<<<<<<<
  *         if is_call:
- *             V_old[j] = S_j - K if S_j > K else 0.0
+ *             option[j] = S_ij - K if S_ij > K else 0.0
 */
-    __pyx_v_S_j = (__pyx_v_j * __pyx_v_dS);
+    __pyx_v_S_ij = ((__pyx_v_S * pow(__pyx_v_u, ((double)__pyx_v_j))) * pow(__pyx_v_d, ((double)(__pyx_v_N - __pyx_v_j))));
 
-    /* "optionpricer/models/_fdm_cy.pyx":32
- *     for j in range(M + 1):
- *         S_j = j * dS
+    /* "optionpricer/models/_binomial_cy.pyx":18
+ *     for j in range(N + 1):
+ *         S_ij = S * (u ** j) * (d ** (N - j))
  *         if is_call:             # <<<<<<<<<<<<<<
- *             V_old[j] = S_j - K if S_j > K else 0.0
+ *             option[j] = S_ij - K if S_ij > K else 0.0
  *         else:
 */
     if (__pyx_v_is_call) {
 
-      /* "optionpricer/models/_fdm_cy.pyx":33
- *         S_j = j * dS
+      /* "optionpricer/models/_binomial_cy.pyx":19
+ *         S_ij = S * (u ** j) * (d ** (N - j))
  *         if is_call:
- *             V_old[j] = S_j - K if S_j > K else 0.0             # <<<<<<<<<<<<<<
+ *             option[j] = S_ij - K if S_ij > K else 0.0             # <<<<<<<<<<<<<<
  *         else:
- *             V_old[j] = K - S_j if K > S_j else 0.0
+ *             option[j] = K - S_ij if K > S_ij else 0.0
 */
-      __pyx_t_7 = (__pyx_v_S_j > __pyx_v_K);
-      if (__pyx_t_7) {
-        __pyx_t_1 = (__pyx_v_S_j - __pyx_v_K);
+      __pyx_t_5 = (__pyx_v_S_ij > __pyx_v_K);
+      if (__pyx_t_5) {
+        __pyx_t_4 = (__pyx_v_S_ij - __pyx_v_K);
       } else {
-        __pyx_t_1 = 0.0;
+        __pyx_t_4 = 0.0;
       }
-      (__pyx_v_V_old[__pyx_v_j]) = __pyx_t_1;
+      (__pyx_v_option[__pyx_v_j]) = __pyx_t_4;
 
-      /* "optionpricer/models/_fdm_cy.pyx":32
- *     for j in range(M + 1):
- *         S_j = j * dS
+      /* "optionpricer/models/_binomial_cy.pyx":18
+ *     for j in range(N + 1):
+ *         S_ij = S * (u ** j) * (d ** (N - j))
  *         if is_call:             # <<<<<<<<<<<<<<
- *             V_old[j] = S_j - K if S_j > K else 0.0
+ *             option[j] = S_ij - K if S_ij > K else 0.0
  *         else:
 */
-      goto __pyx_L7;
+      goto __pyx_L5;
     }
 
-    /* "optionpricer/models/_fdm_cy.pyx":35
- *             V_old[j] = S_j - K if S_j > K else 0.0
+    /* "optionpricer/models/_binomial_cy.pyx":21
+ *             option[j] = S_ij - K if S_ij > K else 0.0
  *         else:
- *             V_old[j] = K - S_j if K > S_j else 0.0             # <<<<<<<<<<<<<<
- *         V_new[j] = V_old[j]
- * 
-*/
-    /*else*/ {
-      __pyx_t_7 = (__pyx_v_K > __pyx_v_S_j);
-      if (__pyx_t_7) {
-        __pyx_t_1 = (__pyx_v_K - __pyx_v_S_j);
-      } else {
-        __pyx_t_1 = 0.0;
-      }
-      (__pyx_v_V_old[__pyx_v_j]) = __pyx_t_1;
-    }
-    __pyx_L7:;
-
-    /* "optionpricer/models/_fdm_cy.pyx":36
- *         else:
- *             V_old[j] = K - S_j if K > S_j else 0.0
- *         V_new[j] = V_old[j]             # <<<<<<<<<<<<<<
+ *             option[j] = K - S_ij if K > S_ij else 0.0             # <<<<<<<<<<<<<<
  * 
  *     for i in range(N - 1, -1, -1):
 */
-    (__pyx_v_V_new[__pyx_v_j]) = (__pyx_v_V_old[__pyx_v_j]);
+    /*else*/ {
+      __pyx_t_5 = (__pyx_v_K > __pyx_v_S_ij);
+      if (__pyx_t_5) {
+        __pyx_t_4 = (__pyx_v_K - __pyx_v_S_ij);
+      } else {
+        __pyx_t_4 = 0.0;
+      }
+      (__pyx_v_option[__pyx_v_j]) = __pyx_t_4;
+    }
+    __pyx_L5:;
   }
 
-  /* "optionpricer/models/_fdm_cy.pyx":38
- *         V_new[j] = V_old[j]
+  /* "optionpricer/models/_binomial_cy.pyx":23
+ *             option[j] = K - S_ij if K > S_ij else 0.0
  * 
  *     for i in range(N - 1, -1, -1):             # <<<<<<<<<<<<<<
- *         tau = (N - i) * dt
- *         if is_call:
+ *         for j in range(i + 1):
+ *             option[j] = df * (p * option[j + 1] + (1.0 - p) * option[j])
 */
-  for (__pyx_t_2 = (__pyx_v_N - 1); __pyx_t_2 > -1; __pyx_t_2-=1) {
-    __pyx_v_i = __pyx_t_2;
+  for (__pyx_t_3 = (__pyx_v_N - 1); __pyx_t_3 > -1; __pyx_t_3-=1) {
+    __pyx_v_i = __pyx_t_3;
 
-    /* "optionpricer/models/_fdm_cy.pyx":39
+    /* "optionpricer/models/_binomial_cy.pyx":24
  * 
  *     for i in range(N - 1, -1, -1):
- *         tau = (N - i) * dt             # <<<<<<<<<<<<<<
- *         if is_call:
- *             V_new[0] = 0.0
+ *         for j in range(i + 1):             # <<<<<<<<<<<<<<
+ *             option[j] = df * (p * option[j + 1] + (1.0 - p) * option[j])
+ *             if american:
 */
-    __pyx_v_tau = ((__pyx_v_N - __pyx_v_i) * __pyx_v_dt);
+    __pyx_t_1 = (__pyx_v_i + 1);
+    __pyx_t_2 = __pyx_t_1;
+    for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_2; __pyx_t_6+=1) {
+      __pyx_v_j = __pyx_t_6;
 
-    /* "optionpricer/models/_fdm_cy.pyx":40
+      /* "optionpricer/models/_binomial_cy.pyx":25
  *     for i in range(N - 1, -1, -1):
- *         tau = (N - i) * dt
- *         if is_call:             # <<<<<<<<<<<<<<
- *             V_new[0] = 0.0
- *             V_new[M] = fmax(S_max * exp(-q * tau) - K * exp(-r * tau), 0.0)
+ *         for j in range(i + 1):
+ *             option[j] = df * (p * option[j + 1] + (1.0 - p) * option[j])             # <<<<<<<<<<<<<<
+ *             if american:
+ *                 S_ij = S * (u ** j) * (d ** (i - j))
 */
-    if (__pyx_v_is_call) {
+      (__pyx_v_option[__pyx_v_j]) = (__pyx_v_df * ((__pyx_v_p * (__pyx_v_option[(__pyx_v_j + 1)])) + ((1.0 - __pyx_v_p) * (__pyx_v_option[__pyx_v_j]))));
 
-      /* "optionpricer/models/_fdm_cy.pyx":41
- *         tau = (N - i) * dt
- *         if is_call:
- *             V_new[0] = 0.0             # <<<<<<<<<<<<<<
- *             V_new[M] = fmax(S_max * exp(-q * tau) - K * exp(-r * tau), 0.0)
- *         else:
+      /* "optionpricer/models/_binomial_cy.pyx":26
+ *         for j in range(i + 1):
+ *             option[j] = df * (p * option[j + 1] + (1.0 - p) * option[j])
+ *             if american:             # <<<<<<<<<<<<<<
+ *                 S_ij = S * (u ** j) * (d ** (i - j))
+ *                 if is_call:
 */
-      (__pyx_v_V_new[0]) = 0.0;
+      if (__pyx_v_american) {
 
-      /* "optionpricer/models/_fdm_cy.pyx":42
- *         if is_call:
- *             V_new[0] = 0.0
- *             V_new[M] = fmax(S_max * exp(-q * tau) - K * exp(-r * tau), 0.0)             # <<<<<<<<<<<<<<
- *         else:
- *             V_new[0] = K * exp(-r * tau)
+        /* "optionpricer/models/_binomial_cy.pyx":27
+ *             option[j] = df * (p * option[j + 1] + (1.0 - p) * option[j])
+ *             if american:
+ *                 S_ij = S * (u ** j) * (d ** (i - j))             # <<<<<<<<<<<<<<
+ *                 if is_call:
+ *                     intrinsic = S_ij - K if S_ij > K else 0.0
 */
-      (__pyx_v_V_new[__pyx_v_M]) = fmax(((__pyx_v_S_max * exp(((-__pyx_v_q) * __pyx_v_tau))) - (__pyx_v_K * exp(((-__pyx_v_r) * __pyx_v_tau)))), 0.0);
+        __pyx_v_S_ij = ((__pyx_v_S * pow(__pyx_v_u, ((double)__pyx_v_j))) * pow(__pyx_v_d, ((double)(__pyx_v_i - __pyx_v_j))));
 
-      /* "optionpricer/models/_fdm_cy.pyx":40
- *     for i in range(N - 1, -1, -1):
- *         tau = (N - i) * dt
- *         if is_call:             # <<<<<<<<<<<<<<
- *             V_new[0] = 0.0
- *             V_new[M] = fmax(S_max * exp(-q * tau) - K * exp(-r * tau), 0.0)
+        /* "optionpricer/models/_binomial_cy.pyx":28
+ *             if american:
+ *                 S_ij = S * (u ** j) * (d ** (i - j))
+ *                 if is_call:             # <<<<<<<<<<<<<<
+ *                     intrinsic = S_ij - K if S_ij > K else 0.0
+ *                 else:
 */
-      goto __pyx_L10;
-    }
+        if (__pyx_v_is_call) {
 
-    /* "optionpricer/models/_fdm_cy.pyx":44
- *             V_new[M] = fmax(S_max * exp(-q * tau) - K * exp(-r * tau), 0.0)
- *         else:
- *             V_new[0] = K * exp(-r * tau)             # <<<<<<<<<<<<<<
- *             V_new[M] = 0.0
- * 
+          /* "optionpricer/models/_binomial_cy.pyx":29
+ *                 S_ij = S * (u ** j) * (d ** (i - j))
+ *                 if is_call:
+ *                     intrinsic = S_ij - K if S_ij > K else 0.0             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     intrinsic = K - S_ij if K > S_ij else 0.0
 */
-    /*else*/ {
-      (__pyx_v_V_new[0]) = (__pyx_v_K * exp(((-__pyx_v_r) * __pyx_v_tau)));
-
-      /* "optionpricer/models/_fdm_cy.pyx":45
- *         else:
- *             V_new[0] = K * exp(-r * tau)
- *             V_new[M] = 0.0             # <<<<<<<<<<<<<<
- * 
- *         for j in range(1, M):
-*/
-      (__pyx_v_V_new[__pyx_v_M]) = 0.0;
-    }
-    __pyx_L10:;
-
-    /* "optionpricer/models/_fdm_cy.pyx":47
- *             V_new[M] = 0.0
- * 
- *         for j in range(1, M):             # <<<<<<<<<<<<<<
- *             RHS[j] = alpha[j] * V_old[j-1] + (1.0 + beta[j]) * V_old[j] + gamma[j] * V_old[j+1]
- * 
-*/
-    __pyx_t_3 = __pyx_v_M;
-    __pyx_t_4 = __pyx_t_3;
-    for (__pyx_t_8 = 1; __pyx_t_8 < __pyx_t_4; __pyx_t_8+=1) {
-      __pyx_v_j = __pyx_t_8;
-
-      /* "optionpricer/models/_fdm_cy.pyx":48
- * 
- *         for j in range(1, M):
- *             RHS[j] = alpha[j] * V_old[j-1] + (1.0 + beta[j]) * V_old[j] + gamma[j] * V_old[j+1]             # <<<<<<<<<<<<<<
- * 
- *         iter_count = 0
-*/
-      (__pyx_v_RHS[__pyx_v_j]) = ((((__pyx_v_alpha[__pyx_v_j]) * (__pyx_v_V_old[(__pyx_v_j - 1)])) + ((1.0 + (__pyx_v_beta[__pyx_v_j])) * (__pyx_v_V_old[__pyx_v_j]))) + ((__pyx_v_gamma[__pyx_v_j]) * (__pyx_v_V_old[(__pyx_v_j + 1)])));
-    }
-
-    /* "optionpricer/models/_fdm_cy.pyx":50
- *             RHS[j] = alpha[j] * V_old[j-1] + (1.0 + beta[j]) * V_old[j] + gamma[j] * V_old[j+1]
- * 
- *         iter_count = 0             # <<<<<<<<<<<<<<
- *         error = tol + 1.0
- * 
-*/
-    __pyx_v_iter_count = 0;
-
-    /* "optionpricer/models/_fdm_cy.pyx":51
- * 
- *         iter_count = 0
- *         error = tol + 1.0             # <<<<<<<<<<<<<<
- * 
- *         while error > tol and iter_count < max_iter:
-*/
-    __pyx_v_error = (__pyx_v_tol + 1.0);
-
-    /* "optionpricer/models/_fdm_cy.pyx":53
- *         error = tol + 1.0
- * 
- *         while error > tol and iter_count < max_iter:             # <<<<<<<<<<<<<<
- *             error = 0.0
- *             for j in range(1, M):
-*/
-    while (1) {
-      __pyx_t_9 = (__pyx_v_error > __pyx_v_tol);
-      if (__pyx_t_9) {
-      } else {
-        __pyx_t_7 = __pyx_t_9;
-        goto __pyx_L15_bool_binop_done;
-      }
-      __pyx_t_9 = (__pyx_v_iter_count < __pyx_v_max_iter);
-      __pyx_t_7 = __pyx_t_9;
-      __pyx_L15_bool_binop_done:;
-      if (!__pyx_t_7) break;
-
-      /* "optionpricer/models/_fdm_cy.pyx":54
- * 
- *         while error > tol and iter_count < max_iter:
- *             error = 0.0             # <<<<<<<<<<<<<<
- *             for j in range(1, M):
- *                 S_j = j * dS
-*/
-      __pyx_v_error = 0.0;
-
-      /* "optionpricer/models/_fdm_cy.pyx":55
- *         while error > tol and iter_count < max_iter:
- *             error = 0.0
- *             for j in range(1, M):             # <<<<<<<<<<<<<<
- *                 S_j = j * dS
- *                 y = (RHS[j] + alpha[j] * V_new[j-1] + gamma[j] * V_new[j+1]) / (1.0 - beta[j])
-*/
-      __pyx_t_3 = __pyx_v_M;
-      __pyx_t_4 = __pyx_t_3;
-      for (__pyx_t_8 = 1; __pyx_t_8 < __pyx_t_4; __pyx_t_8+=1) {
-        __pyx_v_j = __pyx_t_8;
-
-        /* "optionpricer/models/_fdm_cy.pyx":56
- *             error = 0.0
- *             for j in range(1, M):
- *                 S_j = j * dS             # <<<<<<<<<<<<<<
- *                 y = (RHS[j] + alpha[j] * V_new[j-1] + gamma[j] * V_new[j+1]) / (1.0 - beta[j])
- *                 y = V_new[j] + omega * (y - V_new[j])
-*/
-        __pyx_v_S_j = (__pyx_v_j * __pyx_v_dS);
-
-        /* "optionpricer/models/_fdm_cy.pyx":57
- *             for j in range(1, M):
- *                 S_j = j * dS
- *                 y = (RHS[j] + alpha[j] * V_new[j-1] + gamma[j] * V_new[j+1]) / (1.0 - beta[j])             # <<<<<<<<<<<<<<
- *                 y = V_new[j] + omega * (y - V_new[j])
- * 
-*/
-        __pyx_v_y = ((((__pyx_v_RHS[__pyx_v_j]) + ((__pyx_v_alpha[__pyx_v_j]) * (__pyx_v_V_new[(__pyx_v_j - 1)]))) + ((__pyx_v_gamma[__pyx_v_j]) * (__pyx_v_V_new[(__pyx_v_j + 1)]))) / (1.0 - (__pyx_v_beta[__pyx_v_j])));
-
-        /* "optionpricer/models/_fdm_cy.pyx":58
- *                 S_j = j * dS
- *                 y = (RHS[j] + alpha[j] * V_new[j-1] + gamma[j] * V_new[j+1]) / (1.0 - beta[j])
- *                 y = V_new[j] + omega * (y - V_new[j])             # <<<<<<<<<<<<<<
- * 
- *                 if american:
-*/
-        __pyx_v_y = ((__pyx_v_V_new[__pyx_v_j]) + (__pyx_v_omega * (__pyx_v_y - (__pyx_v_V_new[__pyx_v_j]))));
-
-        /* "optionpricer/models/_fdm_cy.pyx":60
- *                 y = V_new[j] + omega * (y - V_new[j])
- * 
- *                 if american:             # <<<<<<<<<<<<<<
- *                     if is_call:
- *                         intrinsic = S_j - K if S_j > K else 0.0
-*/
-        if (__pyx_v_american) {
-
-          /* "optionpricer/models/_fdm_cy.pyx":61
- * 
- *                 if american:
- *                     if is_call:             # <<<<<<<<<<<<<<
- *                         intrinsic = S_j - K if S_j > K else 0.0
- *                     else:
-*/
-          if (__pyx_v_is_call) {
-
-            /* "optionpricer/models/_fdm_cy.pyx":62
- *                 if american:
- *                     if is_call:
- *                         intrinsic = S_j - K if S_j > K else 0.0             # <<<<<<<<<<<<<<
- *                     else:
- *                         intrinsic = K - S_j if K > S_j else 0.0
-*/
-            __pyx_t_7 = (__pyx_v_S_j > __pyx_v_K);
-            if (__pyx_t_7) {
-              __pyx_t_1 = (__pyx_v_S_j - __pyx_v_K);
-            } else {
-              __pyx_t_1 = 0.0;
-            }
-            __pyx_v_intrinsic = __pyx_t_1;
-
-            /* "optionpricer/models/_fdm_cy.pyx":61
- * 
- *                 if american:
- *                     if is_call:             # <<<<<<<<<<<<<<
- *                         intrinsic = S_j - K if S_j > K else 0.0
- *                     else:
-*/
-            goto __pyx_L20;
+          __pyx_t_5 = (__pyx_v_S_ij > __pyx_v_K);
+          if (__pyx_t_5) {
+            __pyx_t_4 = (__pyx_v_S_ij - __pyx_v_K);
+          } else {
+            __pyx_t_4 = 0.0;
           }
+          __pyx_v_intrinsic = __pyx_t_4;
 
-          /* "optionpricer/models/_fdm_cy.pyx":64
- *                         intrinsic = S_j - K if S_j > K else 0.0
- *                     else:
- *                         intrinsic = K - S_j if K > S_j else 0.0             # <<<<<<<<<<<<<<
- *                     y = fmax(y, intrinsic)
- * 
+          /* "optionpricer/models/_binomial_cy.pyx":28
+ *             if american:
+ *                 S_ij = S * (u ** j) * (d ** (i - j))
+ *                 if is_call:             # <<<<<<<<<<<<<<
+ *                     intrinsic = S_ij - K if S_ij > K else 0.0
+ *                 else:
 */
-          /*else*/ {
-            __pyx_t_7 = (__pyx_v_K > __pyx_v_S_j);
-            if (__pyx_t_7) {
-              __pyx_t_1 = (__pyx_v_K - __pyx_v_S_j);
-            } else {
-              __pyx_t_1 = 0.0;
-            }
-            __pyx_v_intrinsic = __pyx_t_1;
-          }
-          __pyx_L20:;
-
-          /* "optionpricer/models/_fdm_cy.pyx":65
- *                     else:
- *                         intrinsic = K - S_j if K > S_j else 0.0
- *                     y = fmax(y, intrinsic)             # <<<<<<<<<<<<<<
- * 
- *                 diff = fabs(V_new[j] - y)
-*/
-          __pyx_v_y = fmax(__pyx_v_y, __pyx_v_intrinsic);
-
-          /* "optionpricer/models/_fdm_cy.pyx":60
- *                 y = V_new[j] + omega * (y - V_new[j])
- * 
- *                 if american:             # <<<<<<<<<<<<<<
- *                     if is_call:
- *                         intrinsic = S_j - K if S_j > K else 0.0
-*/
+          goto __pyx_L11;
         }
 
-        /* "optionpricer/models/_fdm_cy.pyx":67
- *                     y = fmax(y, intrinsic)
+        /* "optionpricer/models/_binomial_cy.pyx":31
+ *                     intrinsic = S_ij - K if S_ij > K else 0.0
+ *                 else:
+ *                     intrinsic = K - S_ij if K > S_ij else 0.0             # <<<<<<<<<<<<<<
  * 
- *                 diff = fabs(V_new[j] - y)             # <<<<<<<<<<<<<<
- *                 if diff > error:
- *                     error = diff
+ *                 if intrinsic > option[j]:
 */
-        __pyx_v_diff = fabs(((__pyx_v_V_new[__pyx_v_j]) - __pyx_v_y));
+        /*else*/ {
+          __pyx_t_5 = (__pyx_v_K > __pyx_v_S_ij);
+          if (__pyx_t_5) {
+            __pyx_t_4 = (__pyx_v_K - __pyx_v_S_ij);
+          } else {
+            __pyx_t_4 = 0.0;
+          }
+          __pyx_v_intrinsic = __pyx_t_4;
+        }
+        __pyx_L11:;
 
-        /* "optionpricer/models/_fdm_cy.pyx":68
+        /* "optionpricer/models/_binomial_cy.pyx":33
+ *                     intrinsic = K - S_ij if K > S_ij else 0.0
  * 
- *                 diff = fabs(V_new[j] - y)
- *                 if diff > error:             # <<<<<<<<<<<<<<
- *                     error = diff
+ *                 if intrinsic > option[j]:             # <<<<<<<<<<<<<<
+ *                     option[j] = intrinsic
  * 
 */
-        __pyx_t_7 = (__pyx_v_diff > __pyx_v_error);
-        if (__pyx_t_7) {
+        __pyx_t_5 = (__pyx_v_intrinsic > (__pyx_v_option[__pyx_v_j]));
+        if (__pyx_t_5) {
 
-          /* "optionpricer/models/_fdm_cy.pyx":69
- *                 diff = fabs(V_new[j] - y)
- *                 if diff > error:
- *                     error = diff             # <<<<<<<<<<<<<<
+          /* "optionpricer/models/_binomial_cy.pyx":34
  * 
- *                 V_new[j] = y
+ *                 if intrinsic > option[j]:
+ *                     option[j] = intrinsic             # <<<<<<<<<<<<<<
+ * 
+ *     result_arr[k] = option[0]
 */
-          __pyx_v_error = __pyx_v_diff;
+          (__pyx_v_option[__pyx_v_j]) = __pyx_v_intrinsic;
 
-          /* "optionpricer/models/_fdm_cy.pyx":68
+          /* "optionpricer/models/_binomial_cy.pyx":33
+ *                     intrinsic = K - S_ij if K > S_ij else 0.0
  * 
- *                 diff = fabs(V_new[j] - y)
- *                 if diff > error:             # <<<<<<<<<<<<<<
- *                     error = diff
+ *                 if intrinsic > option[j]:             # <<<<<<<<<<<<<<
+ *                     option[j] = intrinsic
  * 
 */
         }
 
-        /* "optionpricer/models/_fdm_cy.pyx":71
- *                     error = diff
- * 
- *                 V_new[j] = y             # <<<<<<<<<<<<<<
- * 
- *             iter_count = iter_count + 1
+        /* "optionpricer/models/_binomial_cy.pyx":26
+ *         for j in range(i + 1):
+ *             option[j] = df * (p * option[j + 1] + (1.0 - p) * option[j])
+ *             if american:             # <<<<<<<<<<<<<<
+ *                 S_ij = S * (u ** j) * (d ** (i - j))
+ *                 if is_call:
 */
-        (__pyx_v_V_new[__pyx_v_j]) = __pyx_v_y;
       }
-
-      /* "optionpricer/models/_fdm_cy.pyx":73
- *                 V_new[j] = y
- * 
- *             iter_count = iter_count + 1             # <<<<<<<<<<<<<<
- * 
- *         for j in range(M + 1):
-*/
-      __pyx_v_iter_count = (__pyx_v_iter_count + 1);
-    }
-
-    /* "optionpricer/models/_fdm_cy.pyx":75
- *             iter_count = iter_count + 1
- * 
- *         for j in range(M + 1):             # <<<<<<<<<<<<<<
- *             V_old[j] = V_new[j]
- * 
-*/
-    __pyx_t_5 = (__pyx_v_M + 1);
-    __pyx_t_6 = __pyx_t_5;
-    for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_6; __pyx_t_3+=1) {
-      __pyx_v_j = __pyx_t_3;
-
-      /* "optionpricer/models/_fdm_cy.pyx":76
- * 
- *         for j in range(M + 1):
- *             V_old[j] = V_new[j]             # <<<<<<<<<<<<<<
- * 
- *     j = int(S_0 / dS)
-*/
-      (__pyx_v_V_old[__pyx_v_j]) = (__pyx_v_V_new[__pyx_v_j]);
     }
   }
 
-  /* "optionpricer/models/_fdm_cy.pyx":78
- *             V_old[j] = V_new[j]
+  /* "optionpricer/models/_binomial_cy.pyx":36
+ *                     option[j] = intrinsic
  * 
- *     j = int(S_0 / dS)             # <<<<<<<<<<<<<<
- *     if j >= M:
- *         result_arr[k] = V_old[M]
-*/
-  __pyx_v_j = ((int)(__pyx_v_S_0 / __pyx_v_dS));
-
-  /* "optionpricer/models/_fdm_cy.pyx":79
+ *     result_arr[k] = option[0]             # <<<<<<<<<<<<<<
  * 
- *     j = int(S_0 / dS)
- *     if j >= M:             # <<<<<<<<<<<<<<
- *         result_arr[k] = V_old[M]
- *     else:
+ * cpdef void _build_tree_cython_vectorized(
 */
-  __pyx_t_7 = (__pyx_v_j >= __pyx_v_M);
-  if (__pyx_t_7) {
+  __pyx_t_7 = __pyx_v_k;
+  *((double *) ( /* dim=0 */ (__pyx_v_result_arr.data + __pyx_t_7 * __pyx_v_result_arr.strides[0]) )) = (__pyx_v_option[0]);
 
-    /* "optionpricer/models/_fdm_cy.pyx":80
- *     j = int(S_0 / dS)
- *     if j >= M:
- *         result_arr[k] = V_old[M]             # <<<<<<<<<<<<<<
- *     else:
- *         result_arr[k] = V_old[j] + (V_old[j+1] - V_old[j]) * (S_0 - j * dS) / dS
-*/
-    __pyx_t_10 = __pyx_v_k;
-    *((double *) ( /* dim=0 */ (__pyx_v_result_arr.data + __pyx_t_10 * __pyx_v_result_arr.strides[0]) )) = (__pyx_v_V_old[__pyx_v_M]);
-
-    /* "optionpricer/models/_fdm_cy.pyx":79
- * 
- *     j = int(S_0 / dS)
- *     if j >= M:             # <<<<<<<<<<<<<<
- *         result_arr[k] = V_old[M]
- *     else:
-*/
-    goto __pyx_L24;
-  }
-
-  /* "optionpricer/models/_fdm_cy.pyx":82
- *         result_arr[k] = V_old[M]
- *     else:
- *         result_arr[k] = V_old[j] + (V_old[j+1] - V_old[j]) * (S_0 - j * dS) / dS             # <<<<<<<<<<<<<<
- * 
- * cpdef void _crank_nicolson_psor_vectorized(
-*/
-  /*else*/ {
-    __pyx_t_10 = __pyx_v_k;
-    *((double *) ( /* dim=0 */ (__pyx_v_result_arr.data + __pyx_t_10 * __pyx_v_result_arr.strides[0]) )) = ((__pyx_v_V_old[__pyx_v_j]) + ((((__pyx_v_V_old[(__pyx_v_j + 1)]) - (__pyx_v_V_old[__pyx_v_j])) * (__pyx_v_S_0 - (__pyx_v_j * __pyx_v_dS))) / __pyx_v_dS));
-  }
-  __pyx_L24:;
-
-  /* "optionpricer/models/_fdm_cy.pyx":8
+  /* "optionpricer/models/_binomial_cy.pyx":7
  * cimport numpy as np
  * 
- * cdef void _solve_single_fdm(             # <<<<<<<<<<<<<<
- *     int k,
- *     double S_0, double K, double T, double r, double sigma, double q,
+ * cdef void _solve_single_binomial(             # <<<<<<<<<<<<<<
+ *     int k, double S, double K,
+ *     double u, double d, double df, double p,
 */
 
   /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
-  __Pyx_AddTraceback("optionpricer.models._fdm_cy._solve_single_fdm", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_PyGILState_Release(__pyx_gilstate_save);
-  __pyx_L0:;
 }
 
-/* "optionpricer/models/_fdm_cy.pyx":84
- *         result_arr[k] = V_old[j] + (V_old[j+1] - V_old[j]) * (S_0 - j * dS) / dS
+/* "optionpricer/models/_binomial_cy.pyx":38
+ *     result_arr[k] = option[0]
  * 
- * cpdef void _crank_nicolson_psor_vectorized(             # <<<<<<<<<<<<<<
- *     double[:] S_arr, double[:] K_arr, double[:] T_arr,
- *     double[:] r_arr, double[:] sigma_arr, double[:] q_arr,
+ * cpdef void _build_tree_cython_vectorized(             # <<<<<<<<<<<<<<
+ *     double[:] S_arr,
+ *     double[:] K_arr,
 */
 
-static PyObject *__pyx_pw_12optionpricer_6models_7_fdm_cy_1_crank_nicolson_psor_vectorized(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_12optionpricer_6models_12_binomial_cy_1_build_tree_cython_vectorized(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static void __pyx_f_12optionpricer_6models_7_fdm_cy__crank_nicolson_psor_vectorized(__Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_sigma_arr, __Pyx_memviewslice __pyx_v_q_arr, __Pyx_memviewslice __pyx_v_result_arr, int __pyx_v_M, int __pyx_v_N, int __pyx_v_is_call, int __pyx_v_american, double __pyx_v_omega, double __pyx_v_tol, int __pyx_v_max_iter, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static void __pyx_f_12optionpricer_6models_12_binomial_cy__build_tree_cython_vectorized(__Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_result_arr, double __pyx_v_u, double __pyx_v_d, double __pyx_v_df, double __pyx_v_p, int __pyx_v_N, int __pyx_v_is_call, int __pyx_v_american, CYTHON_UNUSED int __pyx_skip_dispatch) {
   int __pyx_v_k;
   int __pyx_v_num_options;
-  double *__pyx_v_all_alpha;
-  double *__pyx_v_all_beta;
-  double *__pyx_v_all_gamma;
-  double *__pyx_v_all_V_old;
-  double *__pyx_v_all_V_new;
-  double *__pyx_v_all_RHS;
+  double *__pyx_v_all_options;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   int __pyx_t_2;
   int __pyx_t_3;
   Py_ssize_t __pyx_t_4;
   Py_ssize_t __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
-  Py_ssize_t __pyx_t_8;
-  Py_ssize_t __pyx_t_9;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("_crank_nicolson_psor_vectorized", 0);
+  __Pyx_RefNannySetupContext("_build_tree_cython_vectorized", 0);
 
-  /* "optionpricer/models/_fdm_cy.pyx":91
+  /* "optionpricer/models/_binomial_cy.pyx":51
  * ):
  *     cdef int k
  *     cdef int num_options = S_arr.shape[0]             # <<<<<<<<<<<<<<
+ *     cdef double* all_options = <double*>malloc(num_options * (N + 1) * sizeof(double))
  * 
- *     cdef double* all_alpha = <double*>malloc(num_options * (M + 1) * sizeof(double))
 */
   __pyx_v_num_options = (__pyx_v_S_arr.shape[0]);
 
-  /* "optionpricer/models/_fdm_cy.pyx":93
+  /* "optionpricer/models/_binomial_cy.pyx":52
+ *     cdef int k
  *     cdef int num_options = S_arr.shape[0]
- * 
- *     cdef double* all_alpha = <double*>malloc(num_options * (M + 1) * sizeof(double))             # <<<<<<<<<<<<<<
- *     cdef double* all_beta  = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_gamma = <double*>malloc(num_options * (M + 1) * sizeof(double))
-*/
-  __pyx_v_all_alpha = ((double *)malloc(((__pyx_v_num_options * (__pyx_v_M + 1)) * (sizeof(double)))));
-
-  /* "optionpricer/models/_fdm_cy.pyx":94
- * 
- *     cdef double* all_alpha = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_beta  = <double*>malloc(num_options * (M + 1) * sizeof(double))             # <<<<<<<<<<<<<<
- *     cdef double* all_gamma = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_V_old = <double*>malloc(num_options * (M + 1) * sizeof(double))
-*/
-  __pyx_v_all_beta = ((double *)malloc(((__pyx_v_num_options * (__pyx_v_M + 1)) * (sizeof(double)))));
-
-  /* "optionpricer/models/_fdm_cy.pyx":95
- *     cdef double* all_alpha = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_beta  = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_gamma = <double*>malloc(num_options * (M + 1) * sizeof(double))             # <<<<<<<<<<<<<<
- *     cdef double* all_V_old = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_V_new = <double*>malloc(num_options * (M + 1) * sizeof(double))
-*/
-  __pyx_v_all_gamma = ((double *)malloc(((__pyx_v_num_options * (__pyx_v_M + 1)) * (sizeof(double)))));
-
-  /* "optionpricer/models/_fdm_cy.pyx":96
- *     cdef double* all_beta  = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_gamma = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_V_old = <double*>malloc(num_options * (M + 1) * sizeof(double))             # <<<<<<<<<<<<<<
- *     cdef double* all_V_new = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_RHS   = <double*>malloc(num_options * (M + 1) * sizeof(double))
-*/
-  __pyx_v_all_V_old = ((double *)malloc(((__pyx_v_num_options * (__pyx_v_M + 1)) * (sizeof(double)))));
-
-  /* "optionpricer/models/_fdm_cy.pyx":97
- *     cdef double* all_gamma = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_V_old = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_V_new = <double*>malloc(num_options * (M + 1) * sizeof(double))             # <<<<<<<<<<<<<<
- *     cdef double* all_RHS   = <double*>malloc(num_options * (M + 1) * sizeof(double))
- * 
-*/
-  __pyx_v_all_V_new = ((double *)malloc(((__pyx_v_num_options * (__pyx_v_M + 1)) * (sizeof(double)))));
-
-  /* "optionpricer/models/_fdm_cy.pyx":98
- *     cdef double* all_V_old = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_V_new = <double*>malloc(num_options * (M + 1) * sizeof(double))
- *     cdef double* all_RHS   = <double*>malloc(num_options * (M + 1) * sizeof(double))             # <<<<<<<<<<<<<<
+ *     cdef double* all_options = <double*>malloc(num_options * (N + 1) * sizeof(double))             # <<<<<<<<<<<<<<
  * 
  *     for k in prange(num_options, nogil=True):
 */
-  __pyx_v_all_RHS = ((double *)malloc(((__pyx_v_num_options * (__pyx_v_M + 1)) * (sizeof(double)))));
+  __pyx_v_all_options = ((double *)malloc(((__pyx_v_num_options * (__pyx_v_N + 1)) * (sizeof(double)))));
 
-  /* "optionpricer/models/_fdm_cy.pyx":100
- *     cdef double* all_RHS   = <double*>malloc(num_options * (M + 1) * sizeof(double))
+  /* "optionpricer/models/_binomial_cy.pyx":54
+ *     cdef double* all_options = <double*>malloc(num_options * (N + 1) * sizeof(double))
  * 
  *     for k in prange(num_options, nogil=True):             # <<<<<<<<<<<<<<
- *         _solve_single_fdm(
- *             k, S_arr[k], K_arr[k], T_arr[k], r_arr[k], sigma_arr[k], q_arr[k],
+ *         _solve_single_binomial(
+ *             k, S_arr[k], K_arr[k],
 */
   {
       PyThreadState * _save;
@@ -19466,7 +19059,7 @@ static void __pyx_f_12optionpricer_6models_7_fdm_cy__crank_nicolson_psor_vectori
             if (__pyx_t_3 > 0)
             {
                 #ifdef _OPENMP
-                #pragma omp parallel private(__pyx_t_4, __pyx_t_5, __pyx_t_6, __pyx_t_7, __pyx_t_8, __pyx_t_9) __Pyx_shared_in_cpython_freethreading(__pyx_parallel_freethreading_mutex) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
+                #pragma omp parallel private(__pyx_t_4, __pyx_t_5) __Pyx_shared_in_cpython_freethreading(__pyx_parallel_freethreading_mutex) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
                 #endif /* _OPENMP */
                 {
                     #ifdef _OPENMP
@@ -19481,28 +19074,24 @@ static void __pyx_f_12optionpricer_6models_7_fdm_cy__crank_nicolson_psor_vectori
                         {
                             __pyx_v_k = (int)(0 + 1 * __pyx_t_2);
 
-                            /* "optionpricer/models/_fdm_cy.pyx":102
+                            /* "optionpricer/models/_binomial_cy.pyx":56
  *     for k in prange(num_options, nogil=True):
- *         _solve_single_fdm(
- *             k, S_arr[k], K_arr[k], T_arr[k], r_arr[k], sigma_arr[k], q_arr[k],             # <<<<<<<<<<<<<<
- *             all_alpha + k * (M + 1),
- *             all_beta + k * (M + 1),
+ *         _solve_single_binomial(
+ *             k, S_arr[k], K_arr[k],             # <<<<<<<<<<<<<<
+ *             u, d, df, p, N, is_call, american,
+ *             all_options + k * (N + 1), result_arr
 */
                             __pyx_t_4 = __pyx_v_k;
                             __pyx_t_5 = __pyx_v_k;
-                            __pyx_t_6 = __pyx_v_k;
-                            __pyx_t_7 = __pyx_v_k;
-                            __pyx_t_8 = __pyx_v_k;
-                            __pyx_t_9 = __pyx_v_k;
 
-                            /* "optionpricer/models/_fdm_cy.pyx":101
+                            /* "optionpricer/models/_binomial_cy.pyx":55
  * 
  *     for k in prange(num_options, nogil=True):
- *         _solve_single_fdm(             # <<<<<<<<<<<<<<
- *             k, S_arr[k], K_arr[k], T_arr[k], r_arr[k], sigma_arr[k], q_arr[k],
- *             all_alpha + k * (M + 1),
+ *         _solve_single_binomial(             # <<<<<<<<<<<<<<
+ *             k, S_arr[k], K_arr[k],
+ *             u, d, df, p, N, is_call, american,
 */
-                            __pyx_f_12optionpricer_6models_7_fdm_cy__solve_single_fdm(__pyx_v_k, (*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_4 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_5 * __pyx_v_K_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_T_arr.data + __pyx_t_6 * __pyx_v_T_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_r_arr.data + __pyx_t_7 * __pyx_v_r_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_sigma_arr.data + __pyx_t_8 * __pyx_v_sigma_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_q_arr.data + __pyx_t_9 * __pyx_v_q_arr.strides[0]) ))), (__pyx_v_all_alpha + (__pyx_v_k * (__pyx_v_M + 1))), (__pyx_v_all_beta + (__pyx_v_k * (__pyx_v_M + 1))), (__pyx_v_all_gamma + (__pyx_v_k * (__pyx_v_M + 1))), (__pyx_v_all_V_old + (__pyx_v_k * (__pyx_v_M + 1))), (__pyx_v_all_V_new + (__pyx_v_k * (__pyx_v_M + 1))), (__pyx_v_all_RHS + (__pyx_v_k * (__pyx_v_M + 1))), __pyx_v_M, __pyx_v_N, __pyx_v_is_call, __pyx_v_american, __pyx_v_omega, __pyx_v_tol, __pyx_v_max_iter, __pyx_v_result_arr); if (unlikely(__Pyx_ErrOccurredWithGIL())) __PYX_ERR(0, 101, __pyx_L8_error)
+                            __pyx_f_12optionpricer_6models_12_binomial_cy__solve_single_binomial(__pyx_v_k, (*((double *) ( /* dim=0 */ (__pyx_v_S_arr.data + __pyx_t_4 * __pyx_v_S_arr.strides[0]) ))), (*((double *) ( /* dim=0 */ (__pyx_v_K_arr.data + __pyx_t_5 * __pyx_v_K_arr.strides[0]) ))), __pyx_v_u, __pyx_v_d, __pyx_v_df, __pyx_v_p, __pyx_v_N, __pyx_v_is_call, __pyx_v_american, (__pyx_v_all_options + (__pyx_v_k * (__pyx_v_N + 1))), __pyx_v_result_arr); if (unlikely(__Pyx_ErrOccurredWithGIL())) __PYX_ERR(0, 55, __pyx_L8_error)
                             goto __pyx_L11;
                             __pyx_L8_error:;
                             {
@@ -19576,12 +19165,12 @@ PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
         #endif
       }
 
-      /* "optionpricer/models/_fdm_cy.pyx":100
- *     cdef double* all_RHS   = <double*>malloc(num_options * (M + 1) * sizeof(double))
+      /* "optionpricer/models/_binomial_cy.pyx":54
+ *     cdef double* all_options = <double*>malloc(num_options * (N + 1) * sizeof(double))
  * 
  *     for k in prange(num_options, nogil=True):             # <<<<<<<<<<<<<<
- *         _solve_single_fdm(
- *             k, S_arr[k], K_arr[k], T_arr[k], r_arr[k], sigma_arr[k], q_arr[k],
+ *         _solve_single_binomial(
+ *             k, S_arr[k], K_arr[k],
 */
       /*finally:*/ {
         /*normal exit:*/{
@@ -19598,83 +19187,39 @@ PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
       }
   }
 
-  /* "optionpricer/models/_fdm_cy.pyx":112
+  /* "optionpricer/models/_binomial_cy.pyx":61
  *         )
  * 
- *     free(all_alpha)             # <<<<<<<<<<<<<<
- *     free(all_beta)
- *     free(all_gamma)
+ *     free(all_options)             # <<<<<<<<<<<<<<
 */
-  free(__pyx_v_all_alpha);
+  free(__pyx_v_all_options);
 
-  /* "optionpricer/models/_fdm_cy.pyx":113
+  /* "optionpricer/models/_binomial_cy.pyx":38
+ *     result_arr[k] = option[0]
  * 
- *     free(all_alpha)
- *     free(all_beta)             # <<<<<<<<<<<<<<
- *     free(all_gamma)
- *     free(all_V_old)
-*/
-  free(__pyx_v_all_beta);
-
-  /* "optionpricer/models/_fdm_cy.pyx":114
- *     free(all_alpha)
- *     free(all_beta)
- *     free(all_gamma)             # <<<<<<<<<<<<<<
- *     free(all_V_old)
- *     free(all_V_new)
-*/
-  free(__pyx_v_all_gamma);
-
-  /* "optionpricer/models/_fdm_cy.pyx":115
- *     free(all_beta)
- *     free(all_gamma)
- *     free(all_V_old)             # <<<<<<<<<<<<<<
- *     free(all_V_new)
- *     free(all_RHS)
-*/
-  free(__pyx_v_all_V_old);
-
-  /* "optionpricer/models/_fdm_cy.pyx":116
- *     free(all_gamma)
- *     free(all_V_old)
- *     free(all_V_new)             # <<<<<<<<<<<<<<
- *     free(all_RHS)
-*/
-  free(__pyx_v_all_V_new);
-
-  /* "optionpricer/models/_fdm_cy.pyx":117
- *     free(all_V_old)
- *     free(all_V_new)
- *     free(all_RHS)             # <<<<<<<<<<<<<<
-*/
-  free(__pyx_v_all_RHS);
-
-  /* "optionpricer/models/_fdm_cy.pyx":84
- *         result_arr[k] = V_old[j] + (V_old[j+1] - V_old[j]) * (S_0 - j * dS) / dS
- * 
- * cpdef void _crank_nicolson_psor_vectorized(             # <<<<<<<<<<<<<<
- *     double[:] S_arr, double[:] K_arr, double[:] T_arr,
- *     double[:] r_arr, double[:] sigma_arr, double[:] q_arr,
+ * cpdef void _build_tree_cython_vectorized(             # <<<<<<<<<<<<<<
+ *     double[:] S_arr,
+ *     double[:] K_arr,
 */
 
   /* function exit code */
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("optionpricer.models._fdm_cy._crank_nicolson_psor_vectorized", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("optionpricer.models._binomial_cy._build_tree_cython_vectorized", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_12optionpricer_6models_7_fdm_cy_1_crank_nicolson_psor_vectorized(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_12optionpricer_6models_12_binomial_cy_1_build_tree_cython_vectorized(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_12optionpricer_6models_7_fdm_cy_1_crank_nicolson_psor_vectorized = {"_crank_nicolson_psor_vectorized", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_12optionpricer_6models_7_fdm_cy_1_crank_nicolson_psor_vectorized, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_12optionpricer_6models_7_fdm_cy_1_crank_nicolson_psor_vectorized(PyObject *__pyx_self, 
+static PyMethodDef __pyx_mdef_12optionpricer_6models_12_binomial_cy_1_build_tree_cython_vectorized = {"_build_tree_cython_vectorized", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_12optionpricer_6models_12_binomial_cy_1_build_tree_cython_vectorized, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_12optionpricer_6models_12_binomial_cy_1_build_tree_cython_vectorized(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -19683,29 +19228,25 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 ) {
   __Pyx_memviewslice __pyx_v_S_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_K_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_T_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_r_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_sigma_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_q_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_result_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_v_M;
+  double __pyx_v_u;
+  double __pyx_v_d;
+  double __pyx_v_df;
+  double __pyx_v_p;
   int __pyx_v_N;
   int __pyx_v_is_call;
   int __pyx_v_american;
-  double __pyx_v_omega;
-  double __pyx_v_tol;
-  int __pyx_v_max_iter;
   #if !CYTHON_METH_FASTCALL
   CYTHON_UNUSED Py_ssize_t __pyx_nargs;
   #endif
   CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
-  PyObject* values[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  PyObject* values[10] = {0,0,0,0,0,0,0,0,0,0};
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_crank_nicolson_psor_vectorized (wrapper)", 0);
+  __Pyx_RefNannySetupContext("_build_tree_cython_vectorized (wrapper)", 0);
   #if !CYTHON_METH_FASTCALL
   #if CYTHON_ASSUME_SAFE_SIZE
   __pyx_nargs = PyTuple_GET_SIZE(__pyx_args);
@@ -19715,125 +19256,97 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   #endif
   __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
   {
-    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S_arr,&__pyx_mstate_global->__pyx_n_u_K_arr,&__pyx_mstate_global->__pyx_n_u_T_arr,&__pyx_mstate_global->__pyx_n_u_r_arr,&__pyx_mstate_global->__pyx_n_u_sigma_arr,&__pyx_mstate_global->__pyx_n_u_q_arr,&__pyx_mstate_global->__pyx_n_u_result_arr,&__pyx_mstate_global->__pyx_n_u_M,&__pyx_mstate_global->__pyx_n_u_N,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_american,&__pyx_mstate_global->__pyx_n_u_omega,&__pyx_mstate_global->__pyx_n_u_tol,&__pyx_mstate_global->__pyx_n_u_max_iter,0};
+    PyObject ** const __pyx_pyargnames[] = {&__pyx_mstate_global->__pyx_n_u_S_arr,&__pyx_mstate_global->__pyx_n_u_K_arr,&__pyx_mstate_global->__pyx_n_u_result_arr,&__pyx_mstate_global->__pyx_n_u_u,&__pyx_mstate_global->__pyx_n_u_d,&__pyx_mstate_global->__pyx_n_u_df,&__pyx_mstate_global->__pyx_n_u_p,&__pyx_mstate_global->__pyx_n_u_N,&__pyx_mstate_global->__pyx_n_u_is_call,&__pyx_mstate_global->__pyx_n_u_american,0};
     const Py_ssize_t __pyx_kwds_len = (__pyx_kwds) ? __Pyx_NumKwargs_FASTCALL(__pyx_kwds) : 0;
-    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 84, __pyx_L3_error)
+    if (unlikely(__pyx_kwds_len) < 0) __PYX_ERR(0, 38, __pyx_L3_error)
     if (__pyx_kwds_len > 0) {
       switch (__pyx_nargs) {
-        case 14:
-        values[13] = __Pyx_ArgRef_FASTCALL(__pyx_args, 13);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[13])) __PYX_ERR(0, 84, __pyx_L3_error)
-        CYTHON_FALLTHROUGH;
-        case 13:
-        values[12] = __Pyx_ArgRef_FASTCALL(__pyx_args, 12);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[12])) __PYX_ERR(0, 84, __pyx_L3_error)
-        CYTHON_FALLTHROUGH;
-        case 12:
-        values[11] = __Pyx_ArgRef_FASTCALL(__pyx_args, 11);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[11])) __PYX_ERR(0, 84, __pyx_L3_error)
-        CYTHON_FALLTHROUGH;
-        case 11:
-        values[10] = __Pyx_ArgRef_FASTCALL(__pyx_args, 10);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 84, __pyx_L3_error)
-        CYTHON_FALLTHROUGH;
         case 10:
         values[9] = __Pyx_ArgRef_FASTCALL(__pyx_args, 9);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  9:
         values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  8:
         values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  7:
         values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  6:
         values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  5:
         values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  4:
         values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  3:
         values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  2:
         values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  1:
         values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 84, __pyx_L3_error)
+        if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 38, __pyx_L3_error)
         CYTHON_FALLTHROUGH;
         case  0: break;
         default: goto __pyx_L5_argtuple_error;
       }
       const Py_ssize_t kwd_pos_args = __pyx_nargs;
-      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_crank_nicolson_psor_vectorized", 0) < (0)) __PYX_ERR(0, 84, __pyx_L3_error)
-      for (Py_ssize_t i = __pyx_nargs; i < 14; i++) {
-        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_crank_nicolson_psor_vectorized", 1, 14, 14, i); __PYX_ERR(0, 84, __pyx_L3_error) }
+      if (__Pyx_ParseKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values, kwd_pos_args, __pyx_kwds_len, "_build_tree_cython_vectorized", 0) < (0)) __PYX_ERR(0, 38, __pyx_L3_error)
+      for (Py_ssize_t i = __pyx_nargs; i < 10; i++) {
+        if (unlikely(!values[i])) { __Pyx_RaiseArgtupleInvalid("_build_tree_cython_vectorized", 1, 10, 10, i); __PYX_ERR(0, 38, __pyx_L3_error) }
       }
-    } else if (unlikely(__pyx_nargs != 14)) {
+    } else if (unlikely(__pyx_nargs != 10)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_ArgRef_FASTCALL(__pyx_args, 0);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[0])) __PYX_ERR(0, 38, __pyx_L3_error)
       values[1] = __Pyx_ArgRef_FASTCALL(__pyx_args, 1);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[1])) __PYX_ERR(0, 38, __pyx_L3_error)
       values[2] = __Pyx_ArgRef_FASTCALL(__pyx_args, 2);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[2])) __PYX_ERR(0, 38, __pyx_L3_error)
       values[3] = __Pyx_ArgRef_FASTCALL(__pyx_args, 3);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[3])) __PYX_ERR(0, 38, __pyx_L3_error)
       values[4] = __Pyx_ArgRef_FASTCALL(__pyx_args, 4);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[4])) __PYX_ERR(0, 38, __pyx_L3_error)
       values[5] = __Pyx_ArgRef_FASTCALL(__pyx_args, 5);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[5])) __PYX_ERR(0, 38, __pyx_L3_error)
       values[6] = __Pyx_ArgRef_FASTCALL(__pyx_args, 6);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[6])) __PYX_ERR(0, 38, __pyx_L3_error)
       values[7] = __Pyx_ArgRef_FASTCALL(__pyx_args, 7);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[7])) __PYX_ERR(0, 38, __pyx_L3_error)
       values[8] = __Pyx_ArgRef_FASTCALL(__pyx_args, 8);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[8])) __PYX_ERR(0, 38, __pyx_L3_error)
       values[9] = __Pyx_ArgRef_FASTCALL(__pyx_args, 9);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 84, __pyx_L3_error)
-      values[10] = __Pyx_ArgRef_FASTCALL(__pyx_args, 10);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[10])) __PYX_ERR(0, 84, __pyx_L3_error)
-      values[11] = __Pyx_ArgRef_FASTCALL(__pyx_args, 11);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[11])) __PYX_ERR(0, 84, __pyx_L3_error)
-      values[12] = __Pyx_ArgRef_FASTCALL(__pyx_args, 12);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[12])) __PYX_ERR(0, 84, __pyx_L3_error)
-      values[13] = __Pyx_ArgRef_FASTCALL(__pyx_args, 13);
-      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[13])) __PYX_ERR(0, 84, __pyx_L3_error)
+      if (!CYTHON_ASSUME_SAFE_MACROS && unlikely(!values[9])) __PYX_ERR(0, 38, __pyx_L3_error)
     }
-    __pyx_v_S_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_S_arr.memview)) __PYX_ERR(0, 85, __pyx_L3_error)
-    __pyx_v_K_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_K_arr.memview)) __PYX_ERR(0, 85, __pyx_L3_error)
-    __pyx_v_T_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_T_arr.memview)) __PYX_ERR(0, 85, __pyx_L3_error)
-    __pyx_v_r_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_r_arr.memview)) __PYX_ERR(0, 86, __pyx_L3_error)
-    __pyx_v_sigma_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sigma_arr.memview)) __PYX_ERR(0, 86, __pyx_L3_error)
-    __pyx_v_q_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[5], PyBUF_WRITABLE); if (unlikely(!__pyx_v_q_arr.memview)) __PYX_ERR(0, 86, __pyx_L3_error)
-    __pyx_v_result_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_result_arr.memview)) __PYX_ERR(0, 87, __pyx_L3_error)
-    __pyx_v_M = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_M == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
-    __pyx_v_N = __Pyx_PyLong_As_int(values[8]); if (unlikely((__pyx_v_N == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
-    __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[9]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
-    __pyx_v_american = __Pyx_PyObject_IsTrue(values[10]); if (unlikely((__pyx_v_american == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L3_error)
-    __pyx_v_omega = __Pyx_PyFloat_AsDouble(values[11]); if (unlikely((__pyx_v_omega == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L3_error)
-    __pyx_v_tol = __Pyx_PyFloat_AsDouble(values[12]); if (unlikely((__pyx_v_tol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L3_error)
-    __pyx_v_max_iter = __Pyx_PyLong_As_int(values[13]); if (unlikely((__pyx_v_max_iter == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 88, __pyx_L3_error)
+    __pyx_v_S_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_S_arr.memview)) __PYX_ERR(0, 39, __pyx_L3_error)
+    __pyx_v_K_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_K_arr.memview)) __PYX_ERR(0, 40, __pyx_L3_error)
+    __pyx_v_result_arr = __Pyx_PyObject_to_MemoryviewSlice_ds_double(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_result_arr.memview)) __PYX_ERR(0, 41, __pyx_L3_error)
+    __pyx_v_u = __Pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_u == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 42, __pyx_L3_error)
+    __pyx_v_d = __Pyx_PyFloat_AsDouble(values[4]); if (unlikely((__pyx_v_d == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L3_error)
+    __pyx_v_df = __Pyx_PyFloat_AsDouble(values[5]); if (unlikely((__pyx_v_df == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 44, __pyx_L3_error)
+    __pyx_v_p = __Pyx_PyFloat_AsDouble(values[6]); if (unlikely((__pyx_v_p == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 45, __pyx_L3_error)
+    __pyx_v_N = __Pyx_PyLong_As_int(values[7]); if (unlikely((__pyx_v_N == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 46, __pyx_L3_error)
+    __pyx_v_is_call = __Pyx_PyObject_IsTrue(values[8]); if (unlikely((__pyx_v_is_call == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 47, __pyx_L3_error)
+    __pyx_v_american = __Pyx_PyObject_IsTrue(values[9]); if (unlikely((__pyx_v_american == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 48, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_crank_nicolson_psor_vectorized", 1, 14, 14, __pyx_nargs); __PYX_ERR(0, 84, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_build_tree_cython_vectorized", 1, 10, 10, __pyx_nargs); __PYX_ERR(0, 38, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -19842,16 +19355,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_S_arr, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_K_arr, 1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_v_T_arr, 1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_v_r_arr, 1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_v_sigma_arr, 1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_v_q_arr, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_result_arr, 1);
-  __Pyx_AddTraceback("optionpricer.models._fdm_cy._crank_nicolson_psor_vectorized", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("optionpricer.models._binomial_cy._build_tree_cython_vectorized", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_12optionpricer_6models_7_fdm_cy__crank_nicolson_psor_vectorized(__pyx_self, __pyx_v_S_arr, __pyx_v_K_arr, __pyx_v_T_arr, __pyx_v_r_arr, __pyx_v_sigma_arr, __pyx_v_q_arr, __pyx_v_result_arr, __pyx_v_M, __pyx_v_N, __pyx_v_is_call, __pyx_v_american, __pyx_v_omega, __pyx_v_tol, __pyx_v_max_iter);
+  __pyx_r = __pyx_pf_12optionpricer_6models_12_binomial_cy__build_tree_cython_vectorized(__pyx_self, __pyx_v_S_arr, __pyx_v_K_arr, __pyx_v_result_arr, __pyx_v_u, __pyx_v_d, __pyx_v_df, __pyx_v_p, __pyx_v_N, __pyx_v_is_call, __pyx_v_american);
 
   /* function exit code */
   for (Py_ssize_t __pyx_temp=0; __pyx_temp < (Py_ssize_t)(sizeof(values)/sizeof(values[0])); ++__pyx_temp) {
@@ -19859,26 +19368,25 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_S_arr, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_K_arr, 1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_v_T_arr, 1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_v_r_arr, 1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_v_sigma_arr, 1);
-  __PYX_XCLEAR_MEMVIEW(&__pyx_v_q_arr, 1);
   __PYX_XCLEAR_MEMVIEW(&__pyx_v_result_arr, 1);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_12optionpricer_6models_7_fdm_cy__crank_nicolson_psor_vectorized(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_T_arr, __Pyx_memviewslice __pyx_v_r_arr, __Pyx_memviewslice __pyx_v_sigma_arr, __Pyx_memviewslice __pyx_v_q_arr, __Pyx_memviewslice __pyx_v_result_arr, int __pyx_v_M, int __pyx_v_N, int __pyx_v_is_call, int __pyx_v_american, double __pyx_v_omega, double __pyx_v_tol, int __pyx_v_max_iter) {
+static PyObject *__pyx_pf_12optionpricer_6models_12_binomial_cy__build_tree_cython_vectorized(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_S_arr, __Pyx_memviewslice __pyx_v_K_arr, __Pyx_memviewslice __pyx_v_result_arr, double __pyx_v_u, double __pyx_v_d, double __pyx_v_df, double __pyx_v_p, int __pyx_v_N, int __pyx_v_is_call, int __pyx_v_american) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("_crank_nicolson_psor_vectorized", 0);
+  __Pyx_RefNannySetupContext("_build_tree_cython_vectorized", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_f_12optionpricer_6models_7_fdm_cy__crank_nicolson_psor_vectorized(__pyx_v_S_arr, __pyx_v_K_arr, __pyx_v_T_arr, __pyx_v_r_arr, __pyx_v_sigma_arr, __pyx_v_q_arr, __pyx_v_result_arr, __pyx_v_M, __pyx_v_N, __pyx_v_is_call, __pyx_v_american, __pyx_v_omega, __pyx_v_tol, __pyx_v_max_iter, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 84, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_void_to_None(NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (unlikely(!__pyx_v_S_arr.memview)) { __Pyx_RaiseUnboundLocalError("S_arr"); __PYX_ERR(0, 38, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_K_arr.memview)) { __Pyx_RaiseUnboundLocalError("K_arr"); __PYX_ERR(0, 38, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_result_arr.memview)) { __Pyx_RaiseUnboundLocalError("result_arr"); __PYX_ERR(0, 38, __pyx_L1_error) }
+  __pyx_f_12optionpricer_6models_12_binomial_cy__build_tree_cython_vectorized(__pyx_v_S_arr, __pyx_v_K_arr, __pyx_v_result_arr, __pyx_v_u, __pyx_v_d, __pyx_v_df, __pyx_v_p, __pyx_v_N, __pyx_v_is_call, __pyx_v_american, 1); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_void_to_None(NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -19887,7 +19395,7 @@ static PyObject *__pyx_pf_12optionpricer_6models_7_fdm_cy__crank_nicolson_psor_v
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("optionpricer.models._fdm_cy._crank_nicolson_psor_vectorized", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("optionpricer.models._binomial_cy._build_tree_cython_vectorized", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -20021,7 +19529,7 @@ static PyType_Slot __pyx_type___pyx_array_slots[] = {
   {0, 0},
 };
 static PyType_Spec __pyx_type___pyx_array_spec = {
-  "optionpricer.models._fdm_cy.array",
+  "optionpricer.models._binomial_cy.array",
   sizeof(struct __pyx_array_obj),
   0,
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_SEQUENCE,
@@ -20055,7 +19563,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "optionpricer.models._fdm_cy.""array", /*tp_name*/
+  "optionpricer.models._binomial_cy.""array", /*tp_name*/
   sizeof(struct __pyx_array_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_array, /*tp_dealloc*/
@@ -20200,7 +19708,7 @@ static PyType_Slot __pyx_type___pyx_MemviewEnum_slots[] = {
   {0, 0},
 };
 static PyType_Spec __pyx_type___pyx_MemviewEnum_spec = {
-  "optionpricer.models._fdm_cy.Enum",
+  "optionpricer.models._binomial_cy.Enum",
   sizeof(struct __pyx_MemviewEnum_obj),
   0,
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC,
@@ -20210,7 +19718,7 @@ static PyType_Spec __pyx_type___pyx_MemviewEnum_spec = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "optionpricer.models._fdm_cy.""Enum", /*tp_name*/
+  "optionpricer.models._binomial_cy.""Enum", /*tp_name*/
   sizeof(struct __pyx_MemviewEnum_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_Enum, /*tp_dealloc*/
@@ -20477,7 +19985,7 @@ static PyType_Slot __pyx_type___pyx_memoryview_slots[] = {
   {0, 0},
 };
 static PyType_Spec __pyx_type___pyx_memoryview_spec = {
-  "optionpricer.models._fdm_cy.memoryview",
+  "optionpricer.models._binomial_cy.memoryview",
   sizeof(struct __pyx_memoryview_obj),
   0,
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC,
@@ -20511,7 +20019,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "optionpricer.models._fdm_cy.""memoryview", /*tp_name*/
+  "optionpricer.models._binomial_cy.""memoryview", /*tp_name*/
   sizeof(struct __pyx_memoryview_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_memoryview, /*tp_dealloc*/
@@ -20654,7 +20162,7 @@ static PyType_Slot __pyx_type___pyx_memoryviewslice_slots[] = {
   {0, 0},
 };
 static PyType_Spec __pyx_type___pyx_memoryviewslice_spec = {
-  "optionpricer.models._fdm_cy._memoryviewslice",
+  "optionpricer.models._binomial_cy._memoryviewslice",
   sizeof(struct __pyx_memoryviewslice_obj),
   0,
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC|Py_TPFLAGS_SEQUENCE,
@@ -20664,7 +20172,7 @@ static PyType_Spec __pyx_type___pyx_memoryviewslice_spec = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "optionpricer.models._fdm_cy.""_memoryviewslice", /*tp_name*/
+  "optionpricer.models._binomial_cy.""_memoryviewslice", /*tp_name*/
   sizeof(struct __pyx_memoryviewslice_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc__memoryviewslice, /*tp_dealloc*/
@@ -21124,10 +20632,10 @@ static int __Pyx_modinit_function_import_code(__pyx_mstatetype *__pyx_mstate) {
 
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 static PyObject* __pyx_pymod_create(PyObject *spec, PyModuleDef *def); /*proto*/
-static int __pyx_pymod_exec__fdm_cy(PyObject* module); /*proto*/
+static int __pyx_pymod_exec__binomial_cy(PyObject* module); /*proto*/
 static PyModuleDef_Slot __pyx_moduledef_slots[] = {
   {Py_mod_create, (void*)__pyx_pymod_create},
-  {Py_mod_exec, (void*)__pyx_pymod_exec__fdm_cy},
+  {Py_mod_exec, (void*)__pyx_pymod_exec__binomial_cy},
   #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
   {Py_mod_gil, __Pyx_FREETHREADING_COMPATIBLE},
   #endif
@@ -21146,7 +20654,7 @@ namespace {
   #endif
   {
       PyModuleDef_HEAD_INIT,
-      "_fdm_cy",
+      "_binomial_cy",
       0, /* m_doc */
     #if CYTHON_USE_MODULE_STATE
       sizeof(__pyx_mstatetype), /* m_size */
@@ -21184,8 +20692,8 @@ namespace {
   #endif
 #endif
 
-__Pyx_PyMODINIT_FUNC PyInit__fdm_cy(void) CYTHON_SMALL_CODE; /*proto*/
-__Pyx_PyMODINIT_FUNC PyInit__fdm_cy(void)
+__Pyx_PyMODINIT_FUNC PyInit__binomial_cy(void) CYTHON_SMALL_CODE; /*proto*/
+__Pyx_PyMODINIT_FUNC PyInit__binomial_cy(void)
 #if CYTHON_PEP489_MULTI_PHASE_INIT
 {
   return PyModuleDef_Init(&__pyx_moduledef);
@@ -21292,7 +20800,7 @@ bad:
 }
 
 
-static CYTHON_SMALL_CODE int __pyx_pymod_exec__fdm_cy(PyObject *__pyx_pyinit_module)
+static CYTHON_SMALL_CODE int __pyx_pymod_exec__binomial_cy(PyObject *__pyx_pyinit_module)
 #endif
 {
   int stringtab_initialized = 0;
@@ -21315,7 +20823,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec__fdm_cy(PyObject *__pyx_pyinit_mod
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
     if (__pyx_m == __pyx_pyinit_module) return 0;
-    PyErr_SetString(PyExc_RuntimeError, "Module '_fdm_cy' has already been imported. Re-initialisation is not supported.");
+    PyErr_SetString(PyExc_RuntimeError, "Module '_binomial_cy' has already been imported. Re-initialisation is not supported.");
     return -1;
   }
   #else
@@ -21331,7 +20839,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec__fdm_cy(PyObject *__pyx_pyinit_mod
   #if CYTHON_USE_MODULE_STATE
   {
     int add_module_result = __Pyx_State_AddModule(__pyx_t_1, &__pyx_moduledef);
-    __pyx_t_1 = 0; /* transfer ownership from __pyx_t_1 to "_fdm_cy" pseudovariable */
+    __pyx_t_1 = 0; /* transfer ownership from __pyx_t_1 to "_binomial_cy" pseudovariable */
     if (unlikely((add_module_result < 0))) __PYX_ERR(0, 1, __pyx_L1_error)
     pystate_addmodule_run = 1;
   }
@@ -21359,7 +20867,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec__fdm_cy(PyObject *__pyx_pyinit_mod
   }
   #endif
   
-__Pyx_RefNannySetupContext("PyInit__fdm_cy", 0);
+__Pyx_RefNannySetupContext("PyInit__binomial_cy", 0);
   __Pyx_init_runtime_version();
   if (__Pyx_check_binary_version(__PYX_LIMITED_VERSION_HEX, __Pyx_get_runtime_version(), CYTHON_COMPILING_IN_LIMITED_API) < (0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_mstate->__pyx_empty_tuple = PyTuple_New(0); if (unlikely(!__pyx_mstate->__pyx_empty_tuple)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -21370,13 +20878,13 @@ __Pyx_RefNannySetupContext("PyInit__fdm_cy", 0);
   if (__Pyx_InitConstants(__pyx_mstate) < (0)) __PYX_ERR(0, 1, __pyx_L1_error)
   stringtab_initialized = 1;
   if (__Pyx_InitGlobals() < (0)) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__pyx_module_is_main_optionpricer__models___fdm_cy) {
+  if (__pyx_module_is_main_optionpricer__models___binomial_cy) {
     if (PyObject_SetAttr(__pyx_m, __pyx_mstate_global->__pyx_n_u_name_2, __pyx_mstate_global->__pyx_n_u_main) < (0)) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "optionpricer.models._fdm_cy")) {
-      if (unlikely((PyDict_SetItemString(modules, "optionpricer.models._fdm_cy", __pyx_m) < 0))) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "optionpricer.models._binomial_cy")) {
+      if (unlikely((PyDict_SetItemString(modules, "optionpricer.models._binomial_cy", __pyx_m) < 0))) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   /*--- Builtin init code ---*/
@@ -21885,38 +21393,38 @@ __Pyx_RefNannySetupContext("PyInit__fdm_cy", 0);
   if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_pyx_unpickle_Enum, __pyx_t_4) < (0)) __PYX_ERR(1, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "optionpricer/models/_fdm_cy.pyx":5
- * from libc.math cimport fabs, exp, fmax
+  /* "optionpricer/models/_binomial_cy.pyx":4
+ * from libc.stdlib cimport malloc, free
  * from cython.parallel cimport prange
  * import numpy as np             # <<<<<<<<<<<<<<
  * cimport numpy as np
  * 
 */
-  __pyx_t_1 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_mstate_global->__pyx_n_u_numpy, 0, 0, NULL, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
   __pyx_t_4 = __pyx_t_1;
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_np, __pyx_t_4) < (0)) __PYX_ERR(0, 5, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_np, __pyx_t_4) < (0)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "optionpricer/models/_fdm_cy.pyx":84
- *         result_arr[k] = V_old[j] + (V_old[j+1] - V_old[j]) * (S_0 - j * dS) / dS
+  /* "optionpricer/models/_binomial_cy.pyx":38
+ *     result_arr[k] = option[0]
  * 
- * cpdef void _crank_nicolson_psor_vectorized(             # <<<<<<<<<<<<<<
- *     double[:] S_arr, double[:] K_arr, double[:] T_arr,
- *     double[:] r_arr, double[:] sigma_arr, double[:] q_arr,
+ * cpdef void _build_tree_cython_vectorized(             # <<<<<<<<<<<<<<
+ *     double[:] S_arr,
+ *     double[:] K_arr,
 */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_12optionpricer_6models_7_fdm_cy_1_crank_nicolson_psor_vectorized, 0, __pyx_mstate_global->__pyx_n_u_crank_nicolson_psor_vectorized, NULL, __pyx_mstate_global->__pyx_n_u_optionpricer_models__fdm_cy, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_12optionpricer_6models_12_binomial_cy_1_build_tree_cython_vectorized, 0, __pyx_mstate_global->__pyx_n_u_build_tree_cython_vectorized, NULL, __pyx_mstate_global->__pyx_n_u_optionpricer_models__binomial_cy, __pyx_mstate_global->__pyx_d, ((PyObject *)__pyx_mstate_global->__pyx_codeobj_tab[0])); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   #if CYTHON_COMPILING_IN_CPYTHON && PY_VERSION_HEX >= 0x030E0000
   PyUnstable_Object_EnableDeferredRefcount(__pyx_t_4);
   #endif
-  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_crank_nicolson_psor_vectorized, __pyx_t_4) < (0)) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_mstate_global->__pyx_d, __pyx_mstate_global->__pyx_n_u_build_tree_cython_vectorized, __pyx_t_4) < (0)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "optionpricer/models/_fdm_cy.pyx":1
- * # cython: boundscheck=False, wraparound=False, cdivision=True, initializedcheck=False             # <<<<<<<<<<<<<<
+  /* "optionpricer/models/_binomial_cy.pyx":1
+ * # cython: boundscheck=False, wraparound=False, cdivision=True             # <<<<<<<<<<<<<<
  * from libc.stdlib cimport malloc, free
- * from libc.math cimport fabs, exp, fmax
+ * from cython.parallel cimport prange
 */
   __pyx_t_4 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
@@ -21931,7 +21439,7 @@ __Pyx_RefNannySetupContext("PyInit__fdm_cy", 0);
   __Pyx_XDECREF(__pyx_t_5);
   if (__pyx_m) {
     if (__pyx_mstate->__pyx_d && stringtab_initialized) {
-      __Pyx_AddTraceback("init optionpricer.models._fdm_cy", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init optionpricer.models._binomial_cy", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     #if !CYTHON_USE_MODULE_STATE
     Py_CLEAR(__pyx_m);
@@ -21945,7 +21453,7 @@ __Pyx_RefNannySetupContext("PyInit__fdm_cy", 0);
     }
     #endif
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init optionpricer.models._fdm_cy");
+    PyErr_SetString(PyExc_ImportError, "init optionpricer.models._binomial_cy");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -22056,31 +21564,31 @@ static int __Pyx_InitCachedConstants(__pyx_mstatetype *__pyx_mstate) {
 static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
-    const struct { const unsigned int length: 9; } index[] = {{2},{68},{35},{54},{37},{60},{24},{52},{26},{34},{29},{33},{45},{22},{15},{179},{37},{30},{32},{1},{1},{1},{1},{1},{8},{5},{6},{15},{23},{25},{7},{6},{2},{6},{35},{9},{30},{50},{39},{34},{8},{31},{20},{32},{22},{30},{37},{5},{8},{5},{1},{1},{20},{5},{8},{5},{15},{3},{15},{8},{18},{4},{1},{9},{17},{18},{5},{31},{8},{15},{6},{9},{5},{5},{6},{7},{8},{12},{2},{10},{5},{7},{13},{5},{8},{8},{8},{7},{4},{10},{4},{8},{4},{7},{2},{5},{3},{5},{27},{4},{3},{14},{11},{10},{19},{14},{5},{12},{5},{10},{17},{13},{8},{10},{12},{10},{12},{19},{5},{9},{4},{5},{4},{4},{6},{8},{3},{6},{6},{6},{1},{355},{1}};
-    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (1379 bytes) */
-const char* const cstring = "BZh91AY&SY\371}\025\311\000\000\250\177\377\377e\2576j\347\366W\277+\377\244\277\377\377\360@@@@@@@@@@\000@@\000@\000P\005\006\"^`\222\211Pm!)\004\023&\020jz\247\224\362\237\245=#OI\243@\017Q\246\217P=C@2zi\243S\322zjoJ\034\0004\006\201\240\001\246\231\000\006\2152\0004d\301\001\210\000\001\246\204\320@ML\246\233Q\264\236\222\014\206M\250=@h\000\000\000i\240=4\232\034\0004\006\201\240\001\246\231\000\006\2152\0004d\301\001\210\000\001(\204\311\224\364Bz\247\350e&\236\246\231\250\3654\000\031\006\215\000\000\000\000\000;\006$3\211\375\325\247\237J\014\023\245\nT\204&\267\232\331P\254\260\034\262U\022\007\302\302\351\021\310\342[T\016S\rQ?\031\215\007\010\315\014\316\257\336\367;\315\336c\2765\361\302\356v\277\013\342\357\202H\366\230G\243U\026\013\372-+\323\027\005g\177\005\027\003\202\036\177\027\225\354\275<7\352\367)9\342%\210e\246X\007\311J\377\220\306\361!\321f\260r\324\274\206\024\315\272bG\242\223\271mB\2550\3701V`\034\031\254\344\370\264\351}\321\254\356\362r\201\304\007Sw\317\203\2005\3265\302\314\255\035\232\312\253\327}c\007\r\213.8\253\256\266\"*\370,v\204\340\307;w6r\262\022\325\242\342\276\273V\204\371-\352\373\242*\342\241\260',\357\335(\202\343\224d\223nG\233\302\267\353Vd\035k\022e\252\356&\344cK\302K<\350q`\211\376\313\265\246\202\303\312\275\010\216\t\020\225\"\272\301\031\310\264&\241\373G6\363\370\255\020\314\254@}\317\334g\004\3525\\\013E\010\375\267\370|s\227\241L\355\2518\303F\"\004\201\374a\240\207>\242\321\220P\217\036\265\023\324\250\211\004*\223\201\322\230_e\217\"\225QN\277\252b34\267\210\277\324\226\341\025\346\320\330\302<;\213\036}\001l\r\325\341xf\021\363\3127%\266\330\020\255b]\223\020\261F-c\267\303m\031\360\"\257\032\246\316\211_\234\274\211oH\034\003B\325\332B\\\321.\276\354\265\305\263\232M\365\003\035\0052PD\234\310\277\311P\261\276|\303P\222q\366U\205\310\202\006\n\024\200\341\301\025d\005\007\202EB\226F\030\005G\353\317\222Z\204\220\277\031P\302\240Y\324\240\252\205B\204z\255\2703\2118\r;ry.\014w\256\305\343r{,\234\020\361""\244\373\003m\010\201h}\341\352\314\032\t\325*\000\325\\\ny\010\004\211-[\026\255\311\326\201\245\322\305^\240`\264\216\205\031<At\204\220\347\005\025\016Y\337\244\244\020\261\035\316\025#\020e\254\253\261,,\267\001n\023\033'Lq\341\2455\325V\213\321\"\244\213\224\270\345-a\267\215\242\2175\020\250#[\312\266+m<A0\246\001\273,\220\363N\273R!\200\025-Q2\256\266\022GW\037\367\205\3443T\024\035$\220L\256\026L\006\267\261A\235\210\021\014\300\220.q+\260\304\\\222B\t\210\0107\201Du\250w\333\235\315^\010\255;\242SpN\344\202\306\2440\326\\\320\304\360\341\330\307\344\030\222\301\"/\333n\266\343\001\311\001\216\220I\255\212IHy\016\001\263^\216\273,\005U\004\250\022$\373;|\325\275\022\211\225Q\222(\267\013MI\005Z\366g\000\252\202f:`Xfg'\365\213 \034\265HU\002\001\270\207(L\254\205\005%\241$\022\010\211\203\001*\022n\310\330\231m\342\274E\216\t(\225L\246\252\323A\225S#\301\2452\332\221F\226M\201{]\327\030$C\034\255\343\3038\261\201T(iH0\302\210\302\352\321TU\023M\231\312oJ\246]\232\021\242\033R\021\274\254\225\327~C#\245\"\263\032\366\341\202T\r\316\210\375\356\3241B\203PI7+\224\261XP\016&Pb\230\205&\221h\204)\201\021\031\260\307\r.{L\202\007\005\225\2024\225\023\233 0\034\235E\033\001\023U\256\303\013(t\3549U\207 \220\326\022\271\3443\324\232u\331\032\262\260N\016\024\322w\274\247xL\324d.#\031\327\274\204)\021\265V\277A\032`s)\325\004\007\314d\035\305\n\200:\304K\032\265WU-\035\270AiIH$%*\242h\032\335\3323\257\004#\014\220nA\216(r\021\240\266G\032\204\027^\352\341\334')\272&\221\0244\342U\333\247=\302\000\241l\267\217\021\017\230{\252\251o\250;\013\353\304C\"\350K\264@\324\205^\265\024DOr\026.r\342Tq\324\006\212R\216\025u\024;\215h*\023\304\321E\255\231\213\315]\347\270\203(\300\372P\334`A\034}H{eG\325\177\201\014\234Bq\222e\332\323\233\227\0170`\305\266\206}\214|\301\237G\332^\216\200\322$\261\306\205\3715H\0339t\322#\316\334\361\tM\273bc\370\364\362k\022\233BL'\206a#\272&\250\225\316\177\024?\310b\336hhY6\2077\376.\344\212p\241!\362\372+\222";
-    PyObject *data = __Pyx_DecompressString(cstring, 1379, 2);
+    const struct { const unsigned int length: 8; } index[] = {{2},{68},{35},{54},{37},{60},{24},{52},{26},{34},{29},{33},{45},{22},{15},{179},{37},{30},{32},{1},{1},{1},{1},{1},{8},{5},{6},{15},{23},{25},{7},{6},{2},{6},{35},{9},{30},{50},{39},{34},{8},{36},{20},{32},{22},{30},{37},{5},{8},{5},{1},{20},{5},{8},{15},{3},{15},{8},{18},{4},{29},{1},{9},{17},{18},{5},{1},{2},{8},{15},{6},{9},{5},{5},{6},{7},{8},{12},{2},{10},{5},{7},{13},{5},{8},{8},{7},{4},{10},{4},{8},{4},{7},{2},{5},{3},{32},{1},{4},{3},{14},{11},{10},{19},{14},{12},{10},{17},{13},{8},{10},{12},{10},{12},{19},{5},{4},{5},{4},{4},{6},{8},{1},{6},{6},{6},{1},{106},{1}};
+    #if (CYTHON_COMPRESS_STRINGS) == 2 /* compression: bz2 (1265 bytes) */
+const char* const cstring = "BZh91AY&SY\311NqU\000\000\202\377\377\367d\272U\336\347\356W\277+\377\000\277\377\377\364@@@@@@\000@@\000\000@@\000@\000P\004\257\022\000\000\000\013\rSLM)\3453\004\236\246d\200\000\000\r\244d\0004h=\010\331M=\031\252\03444d\321\243F\232\031\031\014 \014\200\031\006\232\000\000d\014\200p\320\321\223F\215\032hdd0\2002\000d\032h\000\001\2202\001\303CFM\0324i\241\221\220\302\000\310\001\220i\240\000\006@\310\002SD& D\304\323B\233\022\237\252y4G\250\374\244\321\240\323@\000\032d\320\037\250e\007j\322\212K.,\223\256\023\222t\235\262(\360egY\006\312A\235\271|H.\202\310_\302|E*\r\024S\301\376\\i\376%\\j>TI\037\024\024\367\354\345\307\371^\266\372\251\210\361)|\365|\326l\276\017\247\317\370%_\243-\277\216\270a\241=\010z\353\231-]?\374\244,\211\236W\213\222Q\\\221\005vG\325I\257*\341\213\336\251\343\002Y\302x\200\220\260|'-#\n\345\2157\256\357w\333X\007\363\374\251\030\001Q\300\302\267\312\017Q\3428\342\345(!\306c\3079+\254l\260\332|\373\366\237\322\300\270}\361\001.j\276\024\361U\r\n\270^=a\n\033\252\2647\251k\240\277*\241\252ea\206\351\300\312\326\215\034H\345\257\237\372\367\337\016;6\367,@{\364\300\021\364;77\\\233\275c\036\235/Jq\207\204\023\353\227\252$+g\266T\252?\277c\377>T6[kH\217Y6\220\224!\324;\261\2026\"i\230\301c(u\016\371\322\333\036l\225T\364\377\273L\217\233M\306\357&\366\034\370\213\356\377\231h\032x}\2270\253\004\007\273)\207\026\236<\347\r\373\371\202\231\253\035\0345\025\231\326d\267\021\274\371\213*\023G\247\277\344|z|\016\222\347\016s\304&\004\202\005\343\360t\362\343\303\010\275\332\364\304\036Y\243\236\245'%5/\315a\351\335\366\315\204\233\334\372\340\2731\211\233\216\202\204\204\336\365\344\302c\347\242q\3244\032\016Koe\273gN\315\345YR\023\220\\-\224\3411W\035\223#\306\036\t@F\027\356\366\342B\315\370?T\222\357\206\335IS\\;N\232\245\334\370\030\3419\222\263\275p}_m.\020\264M\354@\221'\274k\026\311\272\250cy\350\362\263\031=i\364\271\023\232\206\233jy\t\235\226\2732\346\234\306P\217\265\351th)\357O\262xn\341\211\303Sk\345[m\326\255\347IO\245\232\310""\271\311\034\217Z\320>\035\263\220\3473\031\205\264\231\237~\221\236\215w\357{L\365v\303T.\t\267\246n~#\365\352\221\321\345\276$lv*{\022BS\306\315\277AJ\351\215\227AJD\t\0062'\216Zu\013&\243!,0\030\355\0134\236\344\245\325\317\224[\205-\367\tR\004\263j,\330\327D.P\034\373h\036\205\277\t\220\326\275\313S\357G\271\367\334$\330\017p\273\356i`\211L\341\261\367\324\023\022\230\322\226\004\367z\274kvk6whjU\354_\007HO\034b$\t\335#\003\331C\\[\t\313\341P\301\347\263Q\334(,Q$\027j1X'\265$$\"\230\013\001\2545e\r\032)\362\350\310\246\351\005\320\331dW=\033\260\347M\325@\213\334\261/C\303\203\250\374\204\r@\327?{\337\303\260T1\244\240\300\034\315\231\316\214\331!!\275;{\n\3646Y\034y\361\274\351nL\216\344\363y?v\245Wup\302\3258e\223X<\335Lz'\343\341\361=d\2311\271\271:d8A\231\300\335\240\306Y5\236\225\255\252Pg\357y\021\323H8\263I\234g\233\263k\221\331\305\316\002(\357^\n\217:I\273d\235\351$$E\211\336S5\330\333z\341\242W\033\233\213eI=\306\325\315\013#+W\301\220\350\247S\275\277j6\355Z\246\342 \227\003RR*\234\016\264OKE\237\013O\3256-\315JB\022\032\266r\254E\375v\205\272\215CV<\303i\233-Js\027\325ia\214\243)\022y\r\366\0264\301\260\302\252\274\235\366\373nL0Q\247q\365\246\226\246\035+_:\016\367\355\314\337\253\371\233\257\315y6+\362\243\0176g\036\251C\361:\232\323\243\004\204\221!&?C\356\004\306\\`B\321\371\035'W\311I\030<\361\253\030~$\306\r:\246;\3662\344\350\323\217\352\360k\006t\334\323H\355\030\177fc\027\3640M=|v\361\242=b\2254r\273E\330\240\"\351Th\377\027rE8P\220\311NqU";
+    PyObject *data = __Pyx_DecompressString(cstring, 1265, 2);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (1219 bytes) */
-const char* const cstring = "x\332\275UMk\0347\030\216\233\017R\010-!I\241\245\005\205\0226\201d\362A\002%\270.\266\343\202)\371h\234\264\024\nB+\275\273V=#\215%\315z'\247\036}\334\343\034\367\350\243\217>\372\230\237\340c~B~B\037if\355M\\\322[\017;\243\221\336\317\347y^\355c\266\234\347L\351\202\214\327\326xV:\222\244\264\031\236l\262\033\212\025\225\017\254OL\033EcRL\030\305\214\r\314\347\032\346+\325`@\216\2154\3550e\311\247#\032\227\326\023\363\301iE~U\030fM^3\351H\004b\202\365[\247\260)\002\323\236Ik\202\036V\266\362H\302\n*\254\2533x\305P\302{=4,X\006gu'\305i-b\312\316\250\013\274\343t\020\375\234:\203\266\250\201\263\305\247|S[lG\207M\026\352\222X\257\333\017N\030\237\3328qi\315\340\241\001U\230\303\356\311<`\272\005\2415Z+\312P3\277)\020:T%\212\033X\307d\0356\255\311\204s\242^O\005\330*0;`}[\031\345\331M1F\224\033\352\326\372\351\\-\370UYZ\027H\255\233\221\3105X\262\212nG\340a\014\222z\262\307\220\247\207d\261\221\336m6\204\327\314\270-\007X\2474\213OS\203\277\305\006Q\3023\013(\0235\253\251\312\330\217\242\\\367\311\001d@\030iE\222\304\237a/\326^\334y\370\303\303$\013G\177!\275Gu}\231\2039\310!\366T\351< Y\204\327gl}\300j[1C(\023\264\226\260\233w\010\233d\230\247\020\027\254\227\270\020\001}s\270C\233\275\016W=\242\350\375\263\310=e\317?\000\017%w\002\023R\222\237\241\271\021\250d\205\250\023~\320\363\033r\366\004\350\327&)\007!\241\306\0219\010#P\021\277m?6\225-\365n\375$\224\342&\302\023\233e@\350\336X\332<\217\345\200\230L\364\345\342\234\226\243Q[\354\322\307\3333\t-)\355c^J\331\207\222\335\2144\r\223zb\007q\030i\034\310\2044\032's\251}\353\242b\225^\277!\266\370#\273wJ[\306\202\272\201\250\362\3008w\244*I\2343U\245F\2155w@\345H\213\034\247R\033\03587UQ\326\031\227\326QV\300O\2478l t\336\362\245\213(\274y\263\252\020\230\212\217-:\334\226l\031\301)!\031rw\243Js\177\227\017T\301e\235\225\365x\261\275$\324\007h\235\336\213b>\006\355\203\363\343\335\352\230A\221\347V\246\233&\325\256D\020\331\277\234\266S\020ct\027U\266\274\261\272\276\276\226\347\272\364\332\377\302\341\376\364\031""\347/\3521~O\240y\376\014d\274\244\301F<\332\240\355\212\214\244W\361#\016Ov2GP\302,\ro\265(\n\260)\205\021\2766R\333\014\310a\344\265!\337\027\236$\360\217\372\347|\266\030R\210\324\306O\030q\r\375;!\251/\344\226\204\314\003\227\030\353-n4\004\3501\035\245\267\216\217\200\203uP\203\342\\\305z\271\212C\307\265\347-\033\250\027\014\020\330K\303L\316Y7\310\305\320C8`\261\273-8\037TF\306ZP\205\017\261\t\256\021\262%\026\357xc!f\3541\306>\356\245\025c\247H\316\013\201\262\361\034s\3549\\\243\361\016\215\022\300\246UU\216\267\001.\307O\310\033O\332\301\243L\002C\321\266\240\241\230\327P\326j(\3534T\002\220\322\226\234CK\\n\222\334\362U\321~u\225\307eB!\255*Sj\271\205\324kff7J\177\032\234oG\"\361\252D\336\026\344\332\215\331\334\034\257\332\t\233\333\240q\\\016\265G\233\216<\306\246\365\3045\326\365\206U7\210i\335\2256\267\236\305L\242\304_^!b\210\210#\316\035\214\250\364\301\342\347\252\310k\3006\2366G?@\240*!r\302\345^\221\037\377\275\360\376\2133\347\277m\036M/L\305t\373\335\271\357\232?\246\203\275\345\275?\017\256\034\254\034\364\017\317\036>8\374\365\350\377\337~w\361\312\344\376d\371\350\342\327\315\345\243K_\356V\223\345\311\253\346Z#\2320}\264\267\260wu\357\365\376\365\375\207\373\365\341\302\341\325\303\327o\257\277\275\177t\351\253I\277\371\254\371\276y\331\270)\274\256M^N\\s\245Yi\372\323\205S\247\237\376\274:Y\301\306\331\346\0016\266c\001~r\253y<\375}om\377\233\203\373\357/\2349\377\371\356\302\356\345\243s\027\377\353\365\374\037\014d\222q";
-    PyObject *data = __Pyx_DecompressString(cstring, 1219, 1);
+    #elif (CYTHON_COMPRESS_STRINGS) != 0 /* compression: zlib (1128 bytes) */
+const char* const cstring = "x\332}U\313n\034E\024M\"b\005)\022\202\010\t!\004% \232D\212;A\030\t!cd\034#\215\020\216\211\201m\251\272\352\366L\341\356\252\236z\214\247#\026,\275\234e/g\351O\310\322\237\341%\237\220O\340\336\352\236\207c\304\242{\252\253\356\363\234sk\276c\373e\311\224\256\300xm\215g\265\003\tJ\233\321z\223=T\254\212>\260\034\2306\nf\240\2300\212\031\033\230/5\232\377\030\213\002\034\233j8c\312\202OG0\253\255\007\346\203\323\n\374\2010\314\232\262a\322\201\010\300\004\313;\2470\026\201i\317\2445A\217\242\215\036\223\260\n*\353\232\014\275(\224\360^\217\014\013\226\241\263\332Nq:\013J\331\033\365\201\317\234\016\"/\2417\350\212*\234\255\376\3177\265\305\316t\030\263\320\324\300\006\375~p\302\370\324\306\332\2453C\017\215P\205\r\354\236o\002\246;\020:\243\303\252\016\r\363c\201\241C\254\261\270\302:&\2330\266&\023\316\211f\230\n\26010[\260\334F\243<{$f\030\345\241z<\274\231\253\003?\326\265u\001\324\320LE\251\221%\253\340\t\001\217\306H\322@\016\030\346\031`2jd\360\204\215\320ki\334\225\203X\2474\273\277\244\006\377\240\006\261\204#\213P&j\016R\225\324\217\202R\347\340\020d\204\220h\305$\211?\303\216\017\217\267w\276\335I\262p\360'\246\367X].Kd\016\345@=E]\006LF\360\372\214\r\013\326\330\310\014`\231Hk\215v\233\016a\014\206y\010\264`\203\304\205\010\3307Gw\324\346\240\307UO\201\274\177\022\245\207\354\3055\360\260\344^`BJ\360K4O\002\324\254\022M\302\017\365\374\n\234]\003\375\273I\312\301\220\250\306)8\024F\200\212\276mNMe{\203\307?\010\245\270!x\250Y\206\010=\233I[\226T\016\022\223\211\\\356nh\231\214\272b\367\336\336^JhOiOy!e\037I\366\210h\032%\365P\0074\2140\013`B\032\215\365\\j\337\271(\252\322\353W\300v\277g\317nh\313X\244\256\020\261\014\214s\007*J\340\234\251\230\0325\326l#\225S-J<\225\332\350\300\271\211U\335d\\Z\007Y\205~:\305a\205\320e\307\227\256Hx\233f\261\0228\025o[\364\270\355\331\232\300\251Q2\340\236\222JK\377\224\347\332\330\n\363r\331du3\333\355n\nu\r\262\233{\244\350\025r\327\316W\273qE\243(K+\323u\223\032P\"\210\354?N\273Q\240\030\375m\225\355\237\034\014\207""\207e\251k\257\375\317\034\335\2178?nf\370<G\335\363#$\344%\024'tr\002\223\010F\002\315N\266\036#\024\3022\001\357\244(*$S\n#|c\244\266\031\002\207\023\257\r\370\\x2\322\245\342\301\001\360\216>>\305n\254Cb\225Dnh68_.F\020\210v\372\304\010\\\343l8!!\027\362T\342\010\004\245\n\316\025\325\312\025\r\035\327\236wl`\255\310\000 {i\230\3019\353\212R\214<\n\007Y\354o\013\316\213h$\345\303L>P\027\\+|\022\261\370K7\026\306\244&)\366\252\231N\214\275\"9\257\004\226\306\361\372\244\273\223\250\307\017\253b\211\277\006\001Y\275Q\326\370\2063|\325IXX\354\246l\262N6\331\246l\352\032\273\255m\3159\352\207\3131\310S\037\253\356\253/\231\226\251\375\264\212\246\326\362\024s\037\232\245\3354\375[P\237\223(\312\256\230\365\230\254V=#\353\r\230\321r\244=^\202\016<N\ti\201s\274\265\372\226p\325\317]Z\367\005m\254\2271\223\374\010-\334vx\006\265\017\026\037\027\211\275\200\333\234G,\035\233\2155j\030\360\002\217\340g\177\337~\363\361\255\273\237\264\337,\266\026b1\271z\347\263\266\271\330\272\020\027\177\275\376\372u~y\347\362\213\313\227\227\223\177\356=\230\1775\337\277\272\367i+\256\356\277w\036\347\373\363\337\332\017[\321N\350\323\317\277\234\313\366A;\\\374zu\377\243\366N\373y{\320\272\305\007\213\235\305\344\315\326\255\273\357\236\337>\177\377\305\277[x w";
+    PyObject *data = __Pyx_DecompressString(cstring, 1128, 1);
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (2365 bytes) */
-const char* const bytes = ": All dimensions preceding dimension %d must be indexed and not slicedBuffer view does not expose stridesCan only create a buffer that is contiguous in memory.Cannot assign to read-only memoryviewCannot create writable memory view from read-only memoryviewCannot index with type 'Cannot transpose memoryview with indirect dimensionsDimension %d is not directEmpty shape tuple for cython.arrayIndex out of bounds (axis %d)Indirect dimensions not supportedInvalid mode, expected 'c' or 'fortran', got Invalid shape in axis <MemoryView of Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.Out of bounds on buffer access (axis Step may not be zero (axis %d)Unable to convert item to object.>')?add_note and  at 0xcollections.abc<contiguous and direct><contiguous and indirect>disableenablegc (got got differing extents in dimension isenableditemsize <= 0 for cython.arrayno default __reduce__ due to non-trivial __cinit__numpy._core.multiarray failed to importnumpy._core.umath failed to import object>optionpricer/models/_fdm_cy.pyx<strided and direct><strided and direct or indirect><strided and indirect>unable to allocate array data.unable to allocate shape and strides.ASCIIEllipsisK_arrMN__Pyx_PyDict_NextRefS_arrSequenceT_arrView.MemoryViewabcallocate_bufferamericanasyncio.coroutinesbasec__class____class_getitem__cline_in_tracebackcount_crank_nicolson_psor_vectorized__dict__dtype_is_objectencodeenumerateerrorflagsformatfortran__func____getstate__id__import__indexis_call_is_coroutineitemsitemsize__main__max_itermemviewmode__module__name__name__ndim__new__npnumpyobjomegaoptionpricer.models._fdm_cypackpop__pyx_checksum__pyx_state__pyx_type__pyx_unpickle_Enum__pyx_vtable__q_arr__qualname__r_arr__reduce____reduce_cython____reduce_ex__registerresult_arr__set_name__setdefault__setstate____setstate_cython__shapesigma_arrsizestartstepstopstruct__test__tolunpackupda""tevaluesx\200\001\360\016\000\005\034\2305\240\006\240a\240q\340\004\035\230Y\240f\250A\250\\\270\023\270B\270b\300\003\3002\300Q\330\004\035\230Y\240f\250A\250\\\270\023\270B\270b\300\003\3002\300Q\330\004\035\230Y\240f\250A\250\\\270\023\270B\270b\300\003\3002\300Q\330\004\035\230Y\240f\250A\250\\\270\023\270B\270b\300\003\3002\300Q\330\004\035\230Y\240f\250A\250\\\270\023\270B\270b\300\003\3002\300Q\330\004\035\230Y\240f\250A\250\\\270\023\270B\270b\300\003\3002\300Q\340\010\023\2201\220A\330\010\031\230\021\330\014\017\210u\220A\220T\230\025\230a\230t\2405\250\001\250\024\250U\260!\2604\260y\300\001\300\024\300U\310!\3101\330\014\026\220b\230\002\230#\230R\230r\240\021\330\014\025\220R\220r\230\023\230B\230b\240\001\330\014\026\220b\230\002\230#\230R\230r\240\021\330\014\026\220b\230\002\230#\230R\230r\240\021\330\014\026\220b\230\002\230#\230R\230r\240\021\330\014\024\220B\220b\230\003\2302\230R\230q\330\014\017\210s\220)\230:\240W\250E\260\032\2701\360\006\000\005\t\210\001\210\021\330\004\010\210\001\210\021\330\004\010\210\001\210\021\330\004\010\210\001\210\021\330\004\010\210\001\210\021\330\004\010\210\001\210\021O";
+    #else /* compression: none (2088 bytes) */
+const char* const bytes = ": All dimensions preceding dimension %d must be indexed and not slicedBuffer view does not expose stridesCan only create a buffer that is contiguous in memory.Cannot assign to read-only memoryviewCannot create writable memory view from read-only memoryviewCannot index with type 'Cannot transpose memoryview with indirect dimensionsDimension %d is not directEmpty shape tuple for cython.arrayIndex out of bounds (axis %d)Indirect dimensions not supportedInvalid mode, expected 'c' or 'fortran', got Invalid shape in axis <MemoryView of Note that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the 'annotation_typing' directive to False.Out of bounds on buffer access (axis Step may not be zero (axis %d)Unable to convert item to object.>')?add_note and  at 0xcollections.abc<contiguous and direct><contiguous and indirect>disableenablegc (got got differing extents in dimension isenableditemsize <= 0 for cython.arrayno default __reduce__ due to non-trivial __cinit__numpy._core.multiarray failed to importnumpy._core.umath failed to import object>optionpricer/models/_binomial_cy.pyx<strided and direct><strided and direct or indirect><strided and indirect>unable to allocate array data.unable to allocate shape and strides.ASCIIEllipsisK_arrN__Pyx_PyDict_NextRefS_arrSequenceView.MemoryViewabcallocate_bufferamericanasyncio.coroutinesbase_build_tree_cython_vectorizedc__class____class_getitem__cline_in_tracebackcountddf__dict__dtype_is_objectencodeenumerateerrorflagsformatfortran__func____getstate__id__import__indexis_call_is_coroutineitemsitemsize__main__memviewmode__module__name__name__ndim__new__npnumpyobjoptionpricer.models._binomial_cyppackpop__pyx_checksum__pyx_state__pyx_type__pyx_unpickle_Enum__pyx_vtable____qualname____reduce____reduce_cython____reduce_ex__registerresult_arr__set_name__setdefault__setstate____setstate_cython__shapesizestartstepstopstruct__test__uunpackupdatevaluesx\200\001\360\032""\000\005\034\2305\240\006\240a\240q\330\004\037\230y\250\006\250a\250|\2703\270b\300\002\300#\300R\300q\340\010\023\2201\220A\330\010\036\230a\330\014\017\210u\220A\220T\230\025\230a\230q\330\014\017\210s\220$\220c\230\023\230I\240Q\330\014\030\230\002\230\"\230C\230r\240\022\2404\240q\360\006\000\005\t\210\001\210\021O";
     PyObject *data = NULL;
     CYTHON_UNUSED_VAR(__Pyx_DecompressString);
     #endif
     PyObject **stringtab = __pyx_mstate->__pyx_string_tab;
     Py_ssize_t pos = 0;
-    for (int i = 0; i < 131; i++) {
+    for (int i = 0; i < 127; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyUnicode_DecodeUTF8(bytes + pos, bytes_length, NULL);
       if (likely(string) && i >= 47) PyUnicode_InternInPlace(&string);
@@ -22091,7 +21599,7 @@ const char* const bytes = ": All dimensions preceding dimension %d must be index
       stringtab[i] = string;
       pos += bytes_length;
     }
-    for (int i = 131; i < 133; i++) {
+    for (int i = 127; i < 129; i++) {
       Py_ssize_t bytes_length = index[i].length;
       PyObject *string = PyBytes_FromStringAndSize(bytes + pos, bytes_length);
       stringtab[i] = string;
@@ -22102,14 +21610,14 @@ const char* const bytes = ": All dimensions preceding dimension %d must be index
       }
     }
     Py_XDECREF(data);
-    for (Py_ssize_t i = 0; i < 133; i++) {
+    for (Py_ssize_t i = 0; i < 129; i++) {
       if (unlikely(PyObject_Hash(stringtab[i]) == -1)) {
         __PYX_ERR(0, 1, __pyx_L1_error)
       }
     }
     #if CYTHON_IMMORTAL_CONSTANTS
     {
-      PyObject **table = stringtab + 131;
+      PyObject **table = stringtab + 127;
       for (Py_ssize_t i=0; i<2; ++i) {
         #if CYTHON_COMPILING_IN_CPYTHON_FREETHREADING
         #if PY_VERSION_HEX < 0x030E0000
@@ -22166,7 +21674,7 @@ typedef struct {
     unsigned int num_kwonly_args : 1;
     unsigned int nlocals : 4;
     unsigned int flags : 10;
-    unsigned int first_line : 7;
+    unsigned int first_line : 6;
 } __Pyx_PyCode_New_function_description;
 /* NewCodeObj.proto */
 static PyObject* __Pyx_PyCode_New(
@@ -22183,9 +21691,9 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   PyObject* tuple_dedup_map = PyDict_New();
   if (unlikely(!tuple_dedup_map)) return -1;
   {
-    const __Pyx_PyCode_New_function_description descr = {14, 0, 0, 14, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 84};
-    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S_arr, __pyx_mstate->__pyx_n_u_K_arr, __pyx_mstate->__pyx_n_u_T_arr, __pyx_mstate->__pyx_n_u_r_arr, __pyx_mstate->__pyx_n_u_sigma_arr, __pyx_mstate->__pyx_n_u_q_arr, __pyx_mstate->__pyx_n_u_result_arr, __pyx_mstate->__pyx_n_u_M, __pyx_mstate->__pyx_n_u_N, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_american, __pyx_mstate->__pyx_n_u_omega, __pyx_mstate->__pyx_n_u_tol, __pyx_mstate->__pyx_n_u_max_iter};
-    __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_optionpricer_models__fdm_cy_pyx, __pyx_mstate->__pyx_n_u_crank_nicolson_psor_vectorized, __pyx_mstate->__pyx_kp_b_iso88591_5_aq_YfA_Bb_2Q_YfA_Bb_2Q_YfA_Bb, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
+    const __Pyx_PyCode_New_function_description descr = {10, 0, 0, 10, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 38};
+    PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_S_arr, __pyx_mstate->__pyx_n_u_K_arr, __pyx_mstate->__pyx_n_u_result_arr, __pyx_mstate->__pyx_n_u_u, __pyx_mstate->__pyx_n_u_d, __pyx_mstate->__pyx_n_u_df, __pyx_mstate->__pyx_n_u_p, __pyx_mstate->__pyx_n_u_N, __pyx_mstate->__pyx_n_u_is_call, __pyx_mstate->__pyx_n_u_american};
+    __pyx_mstate_global->__pyx_codeobj_tab[0] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_optionpricer_models__binomial_cy_2, __pyx_mstate->__pyx_n_u_build_tree_cython_vectorized, __pyx_mstate->__pyx_kp_b_iso88591_5_aq_y_a_3b_Rq_1A_a_uAT_aq_s_c, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[0])) goto bad;
   }
   Py_DECREF(tuple_dedup_map);
   return 0;
@@ -24996,24 +24504,6 @@ static CYTHON_INLINE long __Pyx_div_long(long a, long b, int b_is_constant) {
         ((r != 0) & ((r ^ b) < 0))
     );
     return q - adapt_python;
-}
-
-/* SoftComplexToDouble */
-static double __Pyx_SoftComplexToDouble(__pyx_t_double_complex value, int have_nogil) {
-    if (unlikely(__Pyx_CIMAG(value))) {
-        PyGILState_STATE gilstate;
-        if (have_nogil)
-            gilstate = PyGILState_Ensure();
-        PyErr_SetString(PyExc_TypeError,
-            "Cannot convert 'complex' with non-zero imaginary component to 'double' "
-            "(this most likely comes from the '**' operator; "
-            "use 'cython.cpow(True)' to return 'nan' instead of a "
-            "complex number).");
-        if (have_nogil)
-            PyGILState_Release(gilstate);
-        return -1.;
-    }
-    return __Pyx_CREAL(value);
 }
 
 /* ErrOccurredWithGIL */
@@ -28489,160 +27979,6 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
 /* Declarations */
   #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
     #ifdef __cplusplus
-      static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
-        return ::std::complex< double >(x, y);
-      }
-    #else
-      static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
-        return x + y*(__pyx_t_double_complex)_Complex_I;
-      }
-    #endif
-  #else
-      static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
-        __pyx_t_double_complex z;
-        z.real = x;
-        z.imag = y;
-        return z;
-      }
-  #endif
-  
-/* Arithmetic */
-  #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
-  #else
-      static CYTHON_INLINE int __Pyx_c_eq_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-         return (a.real == b.real) && (a.imag == b.imag);
-      }
-      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_sum_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-          __pyx_t_double_complex z;
-          z.real = a.real + b.real;
-          z.imag = a.imag + b.imag;
-          return z;
-      }
-      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_diff_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-          __pyx_t_double_complex z;
-          z.real = a.real - b.real;
-          z.imag = a.imag - b.imag;
-          return z;
-      }
-      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_prod_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-          __pyx_t_double_complex z;
-          z.real = a.real * b.real - a.imag * b.imag;
-          z.imag = a.real * b.imag + a.imag * b.real;
-          return z;
-      }
-      #if 1
-      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-          if (b.imag == 0) {
-              return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.real);
-          } else if (fabs(b.real) >= fabs(b.imag)) {
-              if (b.real == 0 && b.imag == 0) {
-                  return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.imag);
-              } else {
-                  double r = b.imag / b.real;
-                  double s = (double)(1.0) / (b.real + b.imag * r);
-                  return __pyx_t_double_complex_from_parts(
-                      (a.real + a.imag * r) * s, (a.imag - a.real * r) * s);
-              }
-          } else {
-              double r = b.real / b.imag;
-              double s = (double)(1.0) / (b.imag + b.real * r);
-              return __pyx_t_double_complex_from_parts(
-                  (a.real * r + a.imag) * s, (a.imag * r - a.real) * s);
-          }
-      }
-      #else
-      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-          if (b.imag == 0) {
-              return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.real);
-          } else {
-              double denom = b.real * b.real + b.imag * b.imag;
-              return __pyx_t_double_complex_from_parts(
-                  (a.real * b.real + a.imag * b.imag) / denom,
-                  (a.imag * b.real - a.real * b.imag) / denom);
-          }
-      }
-      #endif
-      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_neg_double(__pyx_t_double_complex a) {
-          __pyx_t_double_complex z;
-          z.real = -a.real;
-          z.imag = -a.imag;
-          return z;
-      }
-      static CYTHON_INLINE int __Pyx_c_is_zero_double(__pyx_t_double_complex a) {
-         return (a.real == 0) && (a.imag == 0);
-      }
-      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_conj_double(__pyx_t_double_complex a) {
-          __pyx_t_double_complex z;
-          z.real =  a.real;
-          z.imag = -a.imag;
-          return z;
-      }
-      #if 1
-          static CYTHON_INLINE double __Pyx_c_abs_double(__pyx_t_double_complex z) {
-            #if !defined(HAVE_HYPOT) || defined(_MSC_VER)
-              return sqrt(z.real*z.real + z.imag*z.imag);
-            #else
-              return hypot(z.real, z.imag);
-            #endif
-          }
-          static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_pow_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
-              __pyx_t_double_complex z;
-              double r, lnr, theta, z_r, z_theta;
-              if (b.imag == 0 && b.real == (int)b.real) {
-                  if (b.real < 0) {
-                      double denom = a.real * a.real + a.imag * a.imag;
-                      a.real = a.real / denom;
-                      a.imag = -a.imag / denom;
-                      b.real = -b.real;
-                  }
-                  switch ((int)b.real) {
-                      case 0:
-                          z.real = 1;
-                          z.imag = 0;
-                          return z;
-                      case 1:
-                          return a;
-                      case 2:
-                          return __Pyx_c_prod_double(a, a);
-                      case 3:
-                          z = __Pyx_c_prod_double(a, a);
-                          return __Pyx_c_prod_double(z, a);
-                      case 4:
-                          z = __Pyx_c_prod_double(a, a);
-                          return __Pyx_c_prod_double(z, z);
-                  }
-              }
-              if (a.imag == 0) {
-                  if (a.real == 0) {
-                      return a;
-                  } else if ((b.imag == 0) && (a.real >= 0)) {
-                      z.real = pow(a.real, b.real);
-                      z.imag = 0;
-                      return z;
-                  } else if (a.real > 0) {
-                      r = a.real;
-                      theta = 0;
-                  } else {
-                      r = -a.real;
-                      theta = atan2(0.0, -1.0);
-                  }
-              } else {
-                  r = __Pyx_c_abs_double(a);
-                  theta = atan2(a.imag, a.real);
-              }
-              lnr = log(r);
-              z_r = exp(lnr * b.real - theta * b.imag);
-              z_theta = theta * b.real + lnr * b.imag;
-              z.real = z_r * cos(z_theta);
-              z.imag = z_r * sin(z_theta);
-              return z;
-          }
-      #endif
-  #endif
-  
-/* Declarations */
-  #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
-    #ifdef __cplusplus
       static CYTHON_INLINE __pyx_t_float_complex __pyx_t_float_complex_from_parts(float x, float y) {
         return ::std::complex< float >(x, y);
       }
@@ -28789,6 +28125,160 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
               z_theta = theta * b.real + lnr * b.imag;
               z.real = z_r * cosf(z_theta);
               z.imag = z_r * sinf(z_theta);
+              return z;
+          }
+      #endif
+  #endif
+  
+/* Declarations */
+  #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
+    #ifdef __cplusplus
+      static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
+        return ::std::complex< double >(x, y);
+      }
+    #else
+      static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
+        return x + y*(__pyx_t_double_complex)_Complex_I;
+      }
+    #endif
+  #else
+      static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double x, double y) {
+        __pyx_t_double_complex z;
+        z.real = x;
+        z.imag = y;
+        return z;
+      }
+  #endif
+  
+/* Arithmetic */
+  #if CYTHON_CCOMPLEX && (1) && (!0 || __cplusplus)
+  #else
+      static CYTHON_INLINE int __Pyx_c_eq_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+         return (a.real == b.real) && (a.imag == b.imag);
+      }
+      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_sum_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+          __pyx_t_double_complex z;
+          z.real = a.real + b.real;
+          z.imag = a.imag + b.imag;
+          return z;
+      }
+      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_diff_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+          __pyx_t_double_complex z;
+          z.real = a.real - b.real;
+          z.imag = a.imag - b.imag;
+          return z;
+      }
+      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_prod_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+          __pyx_t_double_complex z;
+          z.real = a.real * b.real - a.imag * b.imag;
+          z.imag = a.real * b.imag + a.imag * b.real;
+          return z;
+      }
+      #if 1
+      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+          if (b.imag == 0) {
+              return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.real);
+          } else if (fabs(b.real) >= fabs(b.imag)) {
+              if (b.real == 0 && b.imag == 0) {
+                  return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.imag);
+              } else {
+                  double r = b.imag / b.real;
+                  double s = (double)(1.0) / (b.real + b.imag * r);
+                  return __pyx_t_double_complex_from_parts(
+                      (a.real + a.imag * r) * s, (a.imag - a.real * r) * s);
+              }
+          } else {
+              double r = b.real / b.imag;
+              double s = (double)(1.0) / (b.imag + b.real * r);
+              return __pyx_t_double_complex_from_parts(
+                  (a.real * r + a.imag) * s, (a.imag * r - a.real) * s);
+          }
+      }
+      #else
+      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_quot_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+          if (b.imag == 0) {
+              return __pyx_t_double_complex_from_parts(a.real / b.real, a.imag / b.real);
+          } else {
+              double denom = b.real * b.real + b.imag * b.imag;
+              return __pyx_t_double_complex_from_parts(
+                  (a.real * b.real + a.imag * b.imag) / denom,
+                  (a.imag * b.real - a.real * b.imag) / denom);
+          }
+      }
+      #endif
+      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_neg_double(__pyx_t_double_complex a) {
+          __pyx_t_double_complex z;
+          z.real = -a.real;
+          z.imag = -a.imag;
+          return z;
+      }
+      static CYTHON_INLINE int __Pyx_c_is_zero_double(__pyx_t_double_complex a) {
+         return (a.real == 0) && (a.imag == 0);
+      }
+      static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_conj_double(__pyx_t_double_complex a) {
+          __pyx_t_double_complex z;
+          z.real =  a.real;
+          z.imag = -a.imag;
+          return z;
+      }
+      #if 1
+          static CYTHON_INLINE double __Pyx_c_abs_double(__pyx_t_double_complex z) {
+            #if !defined(HAVE_HYPOT) || defined(_MSC_VER)
+              return sqrt(z.real*z.real + z.imag*z.imag);
+            #else
+              return hypot(z.real, z.imag);
+            #endif
+          }
+          static CYTHON_INLINE __pyx_t_double_complex __Pyx_c_pow_double(__pyx_t_double_complex a, __pyx_t_double_complex b) {
+              __pyx_t_double_complex z;
+              double r, lnr, theta, z_r, z_theta;
+              if (b.imag == 0 && b.real == (int)b.real) {
+                  if (b.real < 0) {
+                      double denom = a.real * a.real + a.imag * a.imag;
+                      a.real = a.real / denom;
+                      a.imag = -a.imag / denom;
+                      b.real = -b.real;
+                  }
+                  switch ((int)b.real) {
+                      case 0:
+                          z.real = 1;
+                          z.imag = 0;
+                          return z;
+                      case 1:
+                          return a;
+                      case 2:
+                          return __Pyx_c_prod_double(a, a);
+                      case 3:
+                          z = __Pyx_c_prod_double(a, a);
+                          return __Pyx_c_prod_double(z, a);
+                      case 4:
+                          z = __Pyx_c_prod_double(a, a);
+                          return __Pyx_c_prod_double(z, z);
+                  }
+              }
+              if (a.imag == 0) {
+                  if (a.real == 0) {
+                      return a;
+                  } else if ((b.imag == 0) && (a.real >= 0)) {
+                      z.real = pow(a.real, b.real);
+                      z.imag = 0;
+                      return z;
+                  } else if (a.real > 0) {
+                      r = a.real;
+                      theta = 0;
+                  } else {
+                      r = -a.real;
+                      theta = atan2(0.0, -1.0);
+                  }
+              } else {
+                  r = __Pyx_c_abs_double(a);
+                  theta = atan2(a.imag, a.real);
+              }
+              lnr = log(r);
+              z_r = exp(lnr * b.real - theta * b.imag);
+              z_theta = theta * b.real + lnr * b.imag;
+              z.real = z_r * cos(z_theta);
+              z.imag = z_r * sin(z_theta);
               return z;
           }
       #endif
@@ -29304,75 +28794,6 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
   #endif
   
 /* CIntToPy */
-  static CYTHON_INLINE PyObject* __Pyx_PyLong_From_int(int value) {
-  #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-  #pragma GCC diagnostic push
-  #pragma GCC diagnostic ignored "-Wconversion"
-  #endif
-      const int neg_one = (int) -1, const_zero = (int) 0;
-  #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-  #pragma GCC diagnostic pop
-  #endif
-      const int is_unsigned = neg_one > const_zero;
-      if (is_unsigned) {
-          if (sizeof(int) < sizeof(long)) {
-              return PyLong_FromLong((long) value);
-          } else if (sizeof(int) <= sizeof(unsigned long)) {
-              return PyLong_FromUnsignedLong((unsigned long) value);
-  #if !CYTHON_COMPILING_IN_PYPY
-          } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
-              return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-  #endif
-          }
-      } else {
-          if (sizeof(int) <= sizeof(long)) {
-              return PyLong_FromLong((long) value);
-          } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
-              return PyLong_FromLongLong((PY_LONG_LONG) value);
-          }
-      }
-      {
-          unsigned char *bytes = (unsigned char *)&value;
-  #if !CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX >= 0x030d00A4
-          if (is_unsigned) {
-              return PyLong_FromUnsignedNativeBytes(bytes, sizeof(value), -1);
-          } else {
-              return PyLong_FromNativeBytes(bytes, sizeof(value), -1);
-          }
-  #elif !CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX < 0x030d0000
-          int one = 1; int little = (int)*(unsigned char *)&one;
-          return _PyLong_FromByteArray(bytes, sizeof(int),
-                                       little, !is_unsigned);
-  #else
-          int one = 1; int little = (int)*(unsigned char *)&one;
-          PyObject *from_bytes, *result = NULL, *kwds = NULL;
-          PyObject *py_bytes = NULL, *order_str = NULL;
-          from_bytes = PyObject_GetAttrString((PyObject*)&PyLong_Type, "from_bytes");
-          if (!from_bytes) return NULL;
-          py_bytes = PyBytes_FromStringAndSize((char*)bytes, sizeof(int));
-          if (!py_bytes) goto limited_bad;
-          order_str = PyUnicode_FromString(little ? "little" : "big");
-          if (!order_str) goto limited_bad;
-          {
-              PyObject *args[3+(CYTHON_VECTORCALL ? 1 : 0)] = { NULL, py_bytes, order_str };
-              if (!is_unsigned) {
-                  kwds = __Pyx_MakeVectorcallBuilderKwds(1);
-                  if (!kwds) goto limited_bad;
-                  if (__Pyx_VectorcallBuilder_AddArgStr("signed", __Pyx_NewRef(Py_True), kwds, args+3, 0) < 0) goto limited_bad;
-              }
-              result = __Pyx_Object_Vectorcall_CallFromBuilder(from_bytes, args+1, 2 | __Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET, kwds);
-          }
-          limited_bad:
-          Py_XDECREF(kwds);
-          Py_XDECREF(order_str);
-          Py_XDECREF(py_bytes);
-          Py_XDECREF(from_bytes);
-          return result;
-  #endif
-      }
-  }
-  
-/* CIntToPy */
   static CYTHON_INLINE PyObject* __Pyx_PyLong_From_long(long value) {
   #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
   #pragma GCC diagnostic push
@@ -29802,6 +29223,75 @@ static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const cha
       PyErr_SetString(PyExc_OverflowError,
           "can't convert negative value to long");
       return (long) -1;
+  }
+  
+/* CIntToPy */
+  static CYTHON_INLINE PyObject* __Pyx_PyLong_From_int(int value) {
+  #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wconversion"
+  #endif
+      const int neg_one = (int) -1, const_zero = (int) 0;
+  #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+  #pragma GCC diagnostic pop
+  #endif
+      const int is_unsigned = neg_one > const_zero;
+      if (is_unsigned) {
+          if (sizeof(int) < sizeof(long)) {
+              return PyLong_FromLong((long) value);
+          } else if (sizeof(int) <= sizeof(unsigned long)) {
+              return PyLong_FromUnsignedLong((unsigned long) value);
+  #if !CYTHON_COMPILING_IN_PYPY
+          } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
+              return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+  #endif
+          }
+      } else {
+          if (sizeof(int) <= sizeof(long)) {
+              return PyLong_FromLong((long) value);
+          } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
+              return PyLong_FromLongLong((PY_LONG_LONG) value);
+          }
+      }
+      {
+          unsigned char *bytes = (unsigned char *)&value;
+  #if !CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX >= 0x030d00A4
+          if (is_unsigned) {
+              return PyLong_FromUnsignedNativeBytes(bytes, sizeof(value), -1);
+          } else {
+              return PyLong_FromNativeBytes(bytes, sizeof(value), -1);
+          }
+  #elif !CYTHON_COMPILING_IN_LIMITED_API && PY_VERSION_HEX < 0x030d0000
+          int one = 1; int little = (int)*(unsigned char *)&one;
+          return _PyLong_FromByteArray(bytes, sizeof(int),
+                                       little, !is_unsigned);
+  #else
+          int one = 1; int little = (int)*(unsigned char *)&one;
+          PyObject *from_bytes, *result = NULL, *kwds = NULL;
+          PyObject *py_bytes = NULL, *order_str = NULL;
+          from_bytes = PyObject_GetAttrString((PyObject*)&PyLong_Type, "from_bytes");
+          if (!from_bytes) return NULL;
+          py_bytes = PyBytes_FromStringAndSize((char*)bytes, sizeof(int));
+          if (!py_bytes) goto limited_bad;
+          order_str = PyUnicode_FromString(little ? "little" : "big");
+          if (!order_str) goto limited_bad;
+          {
+              PyObject *args[3+(CYTHON_VECTORCALL ? 1 : 0)] = { NULL, py_bytes, order_str };
+              if (!is_unsigned) {
+                  kwds = __Pyx_MakeVectorcallBuilderKwds(1);
+                  if (!kwds) goto limited_bad;
+                  if (__Pyx_VectorcallBuilder_AddArgStr("signed", __Pyx_NewRef(Py_True), kwds, args+3, 0) < 0) goto limited_bad;
+              }
+              result = __Pyx_Object_Vectorcall_CallFromBuilder(from_bytes, args+1, 2 | __Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET, kwds);
+          }
+          limited_bad:
+          Py_XDECREF(kwds);
+          Py_XDECREF(order_str);
+          Py_XDECREF(py_bytes);
+          Py_XDECREF(from_bytes);
+          return result;
+  #endif
+      }
   }
   
 /* CIntFromPy */
