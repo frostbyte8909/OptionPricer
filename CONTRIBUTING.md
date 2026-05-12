@@ -60,13 +60,25 @@ python -m build
 
 Inspect `dist/` (`sdist` and a platform wheel may be produced). Release automation uploads **`sdist` only** to PyPI.
 
-## Release checklist
+## Release checklist (Git tag = PyPI version)
 
-1. Bump `version` in [`pyproject.toml`](pyproject.toml).
-2. Update [`CHANGELOG.md`](CHANGELOG.md) for the new version.
-3. Run `make test` and optionally `make bench`.
-4. Commit and push; create a **GitHub Release** (tag `vX.Y.Z` matching the version). The [Publish workflow](.github/workflows/release.yml) runs on `release: published` and uploads the `sdist` to PyPI via **Trusted Publishing (OIDC)**.
-5. Confirm the release on [PyPI](https://pypi.org/project/optionpricer/).
+**Single source of truth:** `version` in [`pyproject.toml`](pyproject.toml). The file on the tagged commit is what becomes the PyPI release.
+
+1. Set `version = "X.Y.Z"` in `pyproject.toml` and document it in [`CHANGELOG.md`](CHANGELOG.md).
+2. Commit and push to `main`.
+3. **Before** creating the GitHub Release, verify locally (optional but recommended):
+
+   ```bash
+   make check-version-tag TAG=vX.Y.Z
+   ```
+
+   Example: if `pyproject.toml` says `0.2.1`, the tag **must** be exactly `v0.2.1`.
+
+4. Create a **GitHub Release** from tag `vX.Y.Z` (same string). Publishing the release runs [`.github/workflows/release.yml`](.github/workflows/release.yml), which **aborts** if the tag and `pyproject.toml` disagree, then uploads the `sdist` to PyPI via Trusted Publishing.
+
+5. Pushing tag `v*` also runs CI [`.github/workflows/ci.yml`](.github/workflows/ci.yml) `verify-release-tag` so mismatches fail before you even open a Release.
+
+6. Confirm the new version on [PyPI](https://pypi.org/project/optionpricer/).
 
 ### PyPI Trusted Publishing
 

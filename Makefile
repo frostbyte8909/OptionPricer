@@ -1,4 +1,4 @@
-.PHONY: all build clean test bench grpc
+.PHONY: all build clean test bench grpc check-version-tag
 
 PYTHON ?= .venv/bin/python
 PIP ?= .venv/bin/pip
@@ -24,6 +24,11 @@ test:
 bench:
 	@echo "Running benchmark suite..."
 	$(PYTHON) tests/bench_v2.py
+
+# Before publishing: TAG must be v + exact value of version in pyproject.toml
+check-version-tag:
+	@test -n "$(TAG)" || (echo "Usage: make check-version-tag TAG=v0.2.1" && exit 1)
+	@python3 scripts/verify_release_version.py $(TAG)
 
 grpc:
 	@echo "Compiling Protobuf/gRPC schemas..."

@@ -4,6 +4,8 @@ A high-performance quantitative option pricing library with Cython AOT compilati
 
 **Links:** [PyPI](https://pypi.org/project/optionpricer/) · [Source / issues](https://github.com/frostbyte8909/optionpricer) · [Changelog](https://github.com/frostbyte8909/optionpricer/blob/main/CHANGELOG.md)
 
+**Versioning:** PyPI releases use `version` in [`pyproject.toml`](pyproject.toml) as the only source of truth. Every release Git tag must be **`v` + that version** (for example `0.2.1` in the file → tag `v0.2.1`). GitHub Actions checks this on tag push and again before publishing to PyPI. Details: [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Installation
 
 ```bash
