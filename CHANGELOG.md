@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.2
+
+[+] `scripts/verify_release_version.py` — Git tag `v*` must match `project.version` in `pyproject.toml`
+[+] CI: verify-release-tag job on tag push; release workflow fails publish if tag and version disagree
+[+] `make check-version-tag TAG=vX.Y.Z` for local preflight; README / CONTRIBUTING versioning notes
+[+] Project URLs default to `frostbyte8909/optionpricer` on GitHub
+
 ## v0.2.1
 
 [+] README: development install, build/grpc, PyPI links, and benchmark methodology for the speed table

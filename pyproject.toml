@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "optionpricer"
-version = "0.2.1"
+version = "0.2.2"
 description = "High-performance quantitative option pricing with Cython, Numba, and stochastic volatility models."
 readme = "README.md"
 license = {text = "Apache-2.0"}
