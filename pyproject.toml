@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "optionpricer"
-version = "0.2.2"
+version = "0.2.3"
 description = "High-performance quantitative option pricing with Cython, Numba, and stochastic volatility models."
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -31,11 +31,11 @@ fast = ["py_lets_be_rational"]
 dev = ["pytest", "psutil", "memory_profiler", "build", "twine"]
 
 [project.urls]
-Homepage = "https://github.com/frostbyte8909/optionpricer"
-Documentation = "https://github.com/frostbyte8909/optionpricer#readme"
-Repository = "https://github.com/frostbyte8909/optionpricer"
-Changelog = "https://github.com/frostbyte8909/optionpricer/blob/main/CHANGELOG.md"
-Issues = "https://github.com/frostbyte8909/optionpricer/issues"
+Homepage = "https://github.com/frostbyte8909/OptionPricer"
+Documentation = "https://github.com/frostbyte8909/OptionPricer#readme"
+Repository = "https://github.com/frostbyte8909/OptionPricer"
+Changelog = "https://github.com/frostbyte8909/OptionPricer/blob/main/CHANGELOG.md"
+Issues = "https://github.com/frostbyte8909/OptionPricer/issues"
 
 [tool.pytest.ini_options]
 markers = [

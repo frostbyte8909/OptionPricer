@@ -84,7 +84,7 @@ Inspect `dist/` (`sdist` and a platform wheel may be produced). Release automati
 
 In the PyPI project settings, add a **trusted publisher** for GitHub:
 
-- Repository: `frostbyte8909/optionpricer`
+- Repository: `frostbyte8909/OptionPricer`
 - Workflow: `release.yml`
 - Environment: leave blank unless you use a GitHub Environment named in the workflow
 
