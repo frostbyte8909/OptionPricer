@@ -31,11 +31,11 @@ fast = ["py_lets_be_rational"]
 dev = ["pytest", "psutil", "memory_profiler", "build", "twine"]
 
 [project.urls]
-Homepage = "https://github.com/palash/optionpricer"
-Documentation = "https://github.com/palash/optionpricer#readme"
-Repository = "https://github.com/palash/optionpricer"
-Changelog = "https://github.com/palash/optionpricer/blob/main/CHANGELOG.md"
-Issues = "https://github.com/palash/optionpricer/issues"
+Homepage = "https://github.com/frostbyte8909/optionpricer"
+Documentation = "https://github.com/frostbyte8909/optionpricer#readme"
+Repository = "https://github.com/frostbyte8909/optionpricer"
+Changelog = "https://github.com/frostbyte8909/optionpricer/blob/main/CHANGELOG.md"
+Issues = "https://github.com/frostbyte8909/optionpricer/issues"
 
 [tool.pytest.ini_options]
 markers = [

@@ -2,7 +2,7 @@
 
 A high-performance quantitative option pricing library with Cython AOT compilation, Numba JIT, stochastic volatility models, and institutional-grade numerical precision.
 
-**Links:** [PyPI](https://pypi.org/project/optionpricer/) · [Source / issues](https://github.com/palash/optionpricer) · [Changelog](https://github.com/palash/optionpricer/blob/main/CHANGELOG.md)
+**Links:** [PyPI](https://pypi.org/project/optionpricer/) · [Source / issues](https://github.com/frostbyte8909/optionpricer) · [Changelog](https://github.com/frostbyte8909/optionpricer/blob/main/CHANGELOG.md)
 
 ## Installation
 
